@@ -110,6 +110,31 @@ WaitVBlank2:
     add a, a
     ld [rSCX] ,a
 
+
+    
+
+    ; Load wMainY into hl (destroying a)
+    ld a, [wMainY]
+    ld l, a
+    ld a, [wMainY+1] 
+    ld h, a 
+
+    ; Put wMainMomentumY is in de.
+    ld a, [wMainMomentumY]
+    ld e, a
+    ld a, [wMainMomentumY+1] 
+    ld d, a 
+    ; Do a 16 bit add of the complement and 1 to subtract the cos / 32 from hl
+    add hl, de
+
+    ; put hl into wMainY
+    ld a, l
+    ld [wMainY], a
+    ld a, h
+    ld [wMainY + 1], a
+
+
+    ; Update the OAM
     ld a, [wMainY+1]
     add a, 16
     ld [_OAMRAM + 0],a
@@ -121,37 +146,18 @@ WaitVBlank2:
     add a, 8
     ld [_OAMRAM + 5],a
 
-
-
     ; Add the ball's momentum to its position in OAM.
 
     ; First, check if the left button is pressed.
-; CheckUp:
-;     ld a, [wCurKeys]
-;     and a, PADF_UP
-;     jp z, CheckDown
-; Up:
-;     ; Move the paddle one pixel to the left.
-;     ld a, [wMainMomentumY]
-;     dec a
-;     ; If we've already hit the edge of the playfield, don't move.
+CheckUp:
+    ld a, [wCurKeys]
+    and a, PADF_UP
+    jp z, Main
+Up:
     
-;     ld [wMainMomentumY], a
-;     jp Main
 
-; ; Then check the right button.
-; CheckDown:
-;     ld a, [wCurKeys]
-;     and a, PADF_DOWN
-;     jp z, Main
-; Down:
-;     ; Move the paddle one pixel to the right.
-;     ld a, [wMainMomentumY]
-;     inc a
-;     ; If we've already hit the edge of the playfield, don't move.
-    
-;     ld [wMainMomentumY], a
-;     jp Main
+; Then check the right button.
+  
     jp Main
 
 INCLUDE "util.inc"
