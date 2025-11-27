@@ -64,7 +64,16 @@ ClearOam:
     ld [hli], a
 
     ; The ball starts out going up and to the right
+    ld a, 2
+    ld [wScrollSpeedLow], a
     ld a, 0
+    ld [wScrollSpeedLow+1], a
+    ld [wScrollSpeedHigh], a
+    ld [wScrollSpeedHigh+1], a
+    ld [wScrollCounterLow], a
+    ld [wScrollCounterLow+1], a
+    ld [wScrollCounterHigh], a
+    ld [wScrollCounterHigh+1], a
     ld [wMainMomentumX], a
     ld [wMainMomentumY], a
     ld [wMainMomentumX+1], a
@@ -107,7 +116,10 @@ WaitVBlank2:
     ld a, [wFrameCounter]
     inc a
     ld [wFrameCounter], a
-    add a, a
+    ld hl, wScrollCounterLow
+    ld de, wScrollSpeedLow
+    call Add32
+    ld a, [wScrollCounterLow] ; TODO: prepare the tile map beyond 256
     ld [rSCX] ,a
 
 
@@ -124,7 +136,7 @@ WaitVBlank2:
     ld e, a
     ld a, [wMainMomentumY+1] 
     ld d, a 
-    ; Do a 16 bit add of the complement and 1 to subtract the cos / 32 from hl
+    ; Do a 16 bit add 
     add hl, de
 
     ; put hl into wMainY
@@ -149,16 +161,37 @@ WaitVBlank2:
     ; Add the ball's momentum to its position in OAM.
 
     ; First, check if the left button is pressed.
+    call UpdateKeys
 CheckUp:
     ld a, [wCurKeys]
     and a, PADF_UP
-    jp z, Main
+    ld b, a
+    ld a, [wCurKeys]
+
+    and a, PADF_A
+    or a, b
+    jp z, EndKeyCheck
 Up:
+    
+    ld a, $00
+    ld [wMainMomentumY], a
+    ld a, $ff
+    ld [wMainMomentumY+1], a
     
 
 ; Then check the right button.
-  
+EndKeyCheck:
     jp Main
+
+CheckFloorTile:
+    ld a, [wMainX+1]
+    ld b, a
+    ld a, [wMainY+1]
+    ld c, a
+    call GetTileByPixel
+
+
+
 
 INCLUDE "util.inc"
 
@@ -191,18 +224,4 @@ TilemapEnd:
 
 
 
-SECTION "Counter", WRAM0
-wFrameCounter: db
-
-SECTION "Input Variables", WRAM0
-wCurKeys: db
-wNewKeys: db
-
-SECTION "Main Data", WRAM0
-wMainX: dw
-wMainY: dw
-wMainMomentumY: dw
-wMainMomentumX: dw
-
-SECTION "Score", WRAM0
-wScore: db
+INCLUDE "var.inc"

@@ -108,3 +108,37 @@ UpdateScoreBoard:
     add a, DIGIT_OFFSET ; Offset + add to get the digit tile again
     ld [SCORE_ONES], a  ; Show the digit on screen
     ret
+
+
+  Add32:
+    ; Function wants 2 pointers at HL and DE
+    ; [HL] = [HL] + [DE]
+    push hl
+    push de
+    push af
+
+    ld a, [de]
+    add a, [hl]
+    ld [hli],a
+    inc de
+
+    ld a, [de]
+    adc a, [hl]
+    ld [hli],a
+    inc de
+
+    ld a, [de]
+    adc a, [hl]
+    ld [hli],a
+    inc de
+
+    ld a, [de]
+    adc a, [hl]
+    ld [hl],a
+    
+
+
+    pop af
+    pop de
+    pop hl
+    ret
