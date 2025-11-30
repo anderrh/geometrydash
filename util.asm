@@ -109,6 +109,52 @@ UpdateScoreBoard:
     ld [SCORE_ONES], a  ; Show the digit on screen
     ret
 
+  Abs16:
+    ; HL = |HL|
+    push af
+    bit 7,h ; if positive set the flags
+    jp z, .AbsReturn
+    ld a,h
+    cpl
+    ld h,a
+    ld a,l
+    cpl
+    ld l,a
+    inc hl    
+    .AbsReturn:
+    pop af
+    ret
+  Neg16:
+    ; hl = -hl
+    push af
+    
+    ld a,h
+    cpl
+    ld h,a
+    ld a,l
+    cpl
+    ld l,a
+    inc hl    
+    
+    pop af
+    ret
+  
+  Sub16:
+      ; Function wants 2 values at HL and DE
+    ; HL = HL + DE
+    push de
+    push af
+    ld a,d
+    cpl
+    ld d,a
+    ld a,e
+    cpl
+    ld e,a
+    add hl,de
+    inc hl
+    pop af
+    pop de
+    ret
 
   Add32:
     ; Function wants 2 pointers at HL and DE

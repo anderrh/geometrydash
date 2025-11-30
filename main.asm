@@ -177,32 +177,16 @@ PlayerMovement:
   call CheckUp
   ret
 
-Gravity:
-  ld a, [wMainMomentumY]
-  ld l,a
-  ld a, [wMainMomentumY+1]
-  ld h,a
-  
-  
-  ld e,$38
-  ld d,$00
 
-  add hl, de
-
-  ld a,l
-  ld [wMainMomentumY], a
-  ld a,h
-  ld [wMainMomentumY+1], a
-  ret
   
 
-INCLUDE "func.inc"
+INCLUDE "func.asm"
 
-INCLUDE "util.inc"
+INCLUDE "util.asm"
 
-INCLUDE "tiles.inc"
+INCLUDE "tiles.asm"
 
-INCLUDE "sprites.inc"
+INCLUDE "sprites.asm"
 
 Tilemap:
   db $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10
@@ -229,4 +213,4 @@ TilemapEnd:
 
 
 
-INCLUDE "var.inc"
+INCLUDE "var.asm"

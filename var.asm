@@ -15,7 +15,8 @@ wMainX: dw
 wMainY: dw
 wMainMomentumY: dw
 wMainMomentumX: dw
-WMainAngle:dw
+wMainAngle:dw
 
 SECTION "Score", WRAM0
 wScore: db
+wGameOver:db
