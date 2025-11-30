@@ -172,12 +172,27 @@ WaitVBlank2:
 
 
 PlayerMovement:
-  
+  call Turn
   call Gravity
-  call CheckUp
+  ; check if touching the ground
+  call CheckFloorTile
+  ; if not touching ground, go to .DoneTouchingGround
+  jp nz ,.DoneTouchingGround
+    ; if Speed < 0 (bit 7 wMainMomentumY + 1) go to BonkedCeiling
+    ld a ,[wMainMomentumY+1]
+    bit 7,a 
+    jp nz ,.BonkedCeiling
+    ; Move Out Of Level with dy = -1 -> hl
+    ld h, $ff
+    ld l, $ff
+    call MoveOutofLevel
+  call CheckUp ; only do the jump key when in the ground.
+
+  .DoneTouchingGround:
   ret
-
-
+  .BonkedCeiling:
+    call GameOver
+  ret
   
 
 INCLUDE "func.asm"

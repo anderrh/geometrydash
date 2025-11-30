@@ -160,3 +160,5 @@ GameOver:
     ld [wScrollSpeedHigh],a
     ld [wScrollSpeedHigh+1],a
     ret
+Turn:
+    ret
