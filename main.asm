@@ -64,7 +64,7 @@ ClearOam:
     ld [hli], a
 
     ; The ball starts out going up and to the right
-    ld a, 2
+    ld a, 1
     ld [wScrollSpeedLow], a
     ld a, 0
     ld [wScrollSpeedLow+1], a
@@ -159,39 +159,44 @@ WaitVBlank2:
     ld [_OAMRAM + 5],a
 
     ; Add the ball's momentum to its position in OAM.
-
+    call PlayerMovement
     ; First, check if the left button is pressed.
     call UpdateKeys
-CheckUp:
-    ld a, [wCurKeys]
-    and a, PADF_UP
-    ld b, a
-    ld a, [wCurKeys]
 
-    and a, PADF_A
-    or a, b
-    jp z, EndKeyCheck
-Up:
     
-    ld a, $00
-    ld [wMainMomentumY], a
-    ld a, $ff
-    ld [wMainMomentumY+1], a
     
-
 ; Then check the right button.
-EndKeyCheck:
+
     jp Main
 
-CheckFloorTile:
-    ld a, [wMainX+1]
-    ld b, a
-    ld a, [wMainY+1]
-    ld c, a
-    call GetTileByPixel
 
 
+PlayerMovement:
+  
+  call Gravity
+  call CheckUp
+  ret
 
+Gravity:
+  ld a, [wMainMomentumY]
+  ld l,a
+  ld a, [wMainMomentumY+1]
+  ld h,a
+  
+  
+  ld e,$38
+  ld d,$00
+
+  add hl, de
+
+  ld a,l
+  ld [wMainMomentumY], a
+  ld a,h
+  ld [wMainMomentumY+1], a
+  ret
+  
+
+INCLUDE "func.inc"
 
 INCLUDE "util.inc"
 
