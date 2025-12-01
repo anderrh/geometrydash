@@ -5,25 +5,8 @@ CheckFloorTile:
     ld b, a
     ld a, [wMainY+1]
     ld c, a
-    call GetTileByPixel
-    call IsFloorTile
-    ret z
-    ld a, [wMainX+1]
-    ld b, a
-    ld a, [wMainY+1]
-    ld c, a
-    ld a,b
-    add a, 8
-    ld b,a
-    call GetTileByPixel
-    call IsFloorTile
-    ret z
-    ld a, [wMainX+1]
-    ld b, a
-    ld a, [wMainY+1]
-    ld c, a
     ld a,c
-    add a, 8
+    add a, 4
     ld c,a
     call GetTileByPixel
     call IsFloorTile
@@ -36,7 +19,30 @@ CheckFloorTile:
     add a, 8
     ld b,a
     ld a,c
+    add a, 4
+    ld c,a
+    call GetTileByPixel
+    call IsFloorTile
+    ret z
+    ld a, [wMainX+1]
+    ld b, a
+    ld a, [wMainY+1]
+    ld c, a
+    ld a,c
+    add a, 12
+    ld c,a
+    call GetTileByPixel
+    call IsFloorTile
+    ret z
+    ld a, [wMainX+1]
+    ld b, a
+    ld a, [wMainY+1]
+    ld c, a
+    ld a,b
     add a, 8
+    ld b,a
+    ld a,c
+    add a, 12
     ld c,a
     call GetTileByPixel
     call IsFloorTile
@@ -75,9 +81,14 @@ Gravity:
   
   ld e,$38
   ld d,$00
-
+;  bit 7, h ; if negative always do gravity
+;  jp nz, .always_do_gravity
+;  ld a, h
+;  cp a, 4
+;  jp nc, .skip_terminal_velocity
+;  .always_do_gravity:
   add hl, de
-
+;.skip_terminal_velocity:
   ld a,l
   ld [wMainMomentumY], a
   ld a,h
