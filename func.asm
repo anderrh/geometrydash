@@ -1,39 +1,39 @@
 CheckFloorTile:
     ;clobbers 
     ; a, f, h, l, b ,c
-    ld a, [wMainX+1]
-    ld b, a
-    ld a, [wMainY+1]
-    ld c, a
-    ld a,c
-    add a, 4
-    ld c,a
-    call GetTileByPixel
-    call IsFloorTile
-    ret z
-    ld a, [wMainX+1]
-    ld b, a
-    ld a, [wMainY+1]
-    ld c, a
-    ld a,b
-    add a, 8
-    ld b,a
-    ld a,c
-    add a, 4
-    ld c,a
-    call GetTileByPixel
-    call IsFloorTile
-    ret z
-    ld a, [wMainX+1]
-    ld b, a
-    ld a, [wMainY+1]
-    ld c, a
-    ld a,c
-    add a, 12
-    ld c,a
-    call GetTileByPixel
-    call IsFloorTile
-    ret z
+    ;ld a, [wMainX+1]
+    ;ld b, a
+    ;ld a, [wMainY+1]
+    ;ld c, a
+    ;ld a,c
+    ;add a, 4
+    ;ld c,a
+    ;call GetTileByPixel
+    ;call IsFloorTile
+    ;ret z
+    ;ld a, [wMainX+1]
+    ;ld b, a
+    ;ld a, [wMainY+1]
+    ;ld c, a
+    ;ld a,b
+    ;add a, 8
+    ;ld b,a
+    ;ld a,c
+    ;add a, 4
+    ;ld c,a
+    ;call GetTileByPixel
+    ;call IsFloorTile
+    ;ret z
+;    ld a, [wMainX+1]
+;    ld b, a
+;    ld a, [wMainY+1]
+;    ld c, a
+;    ld a,c
+;    add a, 12
+;    ld c,a
+;    call GetTileByPixel
+;    call IsFloorTile
+;    ret z
     ld a, [wMainX+1]
     ld b, a
     ld a, [wMainY+1]
@@ -103,8 +103,8 @@ MoveOutofLevel:
     push af
     push bc
     push hl
-    add hl, hl
-    add hl, hl;multiply by 4
+    add hl, hl;multiply by 2
+    ; griffpatch only add hl, hl;multiply by 4
     call Neg16
     ; now we need to load wMainY into de and then hl = hl + de
     ; and then write hl back to wMainY

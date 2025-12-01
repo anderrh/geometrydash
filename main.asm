@@ -64,7 +64,7 @@ ClearOam:
     ld [hli], a
 
     ; The ball starts out going up and to the right
-    ld a, 1
+    ld a, 1 ; 1 pixel per frame scrolling
     ld [wScrollSpeedLow], a
     ld a, 0
     ld [wScrollSpeedLow+1], a
@@ -184,7 +184,7 @@ PlayerMovement:
     jp nz ,.BonkedCeiling
     ; Move Out Of Level with dy = -1 -> hl
     ld h, $ff
-    ld l, $ff
+    ld l, $00
     call MoveOutofLevel
   call CheckUp ; only do the jump key when in the ground.
 
