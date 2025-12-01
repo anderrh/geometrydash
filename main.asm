@@ -184,7 +184,7 @@ PlayerMovement:
     jp nz ,.BonkedCeiling
     ; Move Out Of Level with dy = -1 -> hl
     ld h, $ff
-    ld l, $ff
+    ld l, $00
     call MoveOutofLevel
   call CheckUp ; only do the jump key when in the ground.
 
