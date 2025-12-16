@@ -2,6 +2,16 @@ DEF SCORE_TENS   EQU $9870
 DEF SCORE_ONES   EQU $9871
 DEF DIGIT_OFFSET   EQU $0
 
+
+DEF ooo EQU $10
+DEF BBB EQU $11
+DEF AAA EQU $12
+DEF vvv EQU $13
+DEF iii EQU $14
+DEF III EQU $15
+DEF uuu EQU $16
+
+
 ; Copy bytes from one area to another.
 ; @param de: Source
 ; @param hl: Destination

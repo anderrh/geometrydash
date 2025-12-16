@@ -24,16 +24,16 @@ CheckFloorTile:
     ;call GetTileByPixel
     ;call IsFloorTile
     ;ret z
-;    ld a, [wMainX+1]
-;    ld b, a
-;    ld a, [wMainY+1]
-;    ld c, a
-;    ld a,c
-;    add a, 12
-;    ld c,a
-;    call GetTileByPixel
-;    call IsFloorTile
-;    ret z
+    ld a, [wMainX+1]
+    ld b, a
+    ld a, [wMainY+1]
+    ld c, a
+    ld a,c
+    add a, 11
+    ld c,a
+    call GetTileByPixel
+    call IsFloorTile
+    ret z
     ld a, [wMainX+1]
     ld b, a
     ld a, [wMainY+1]
@@ -42,7 +42,7 @@ CheckFloorTile:
     add a, 8
     ld b,a
     ld a,c
-    add a, 12
+    add a, 11
     ld c,a
     call GetTileByPixel
     call IsFloorTile
@@ -66,7 +66,7 @@ CheckUp:
     ret z
 Up:
     
-    ld a, $ff
+    ld a, $f0
     ld [wMainMomentumY], a
     ld a, $fd
     ld [wMainMomentumY+1], a
@@ -79,7 +79,7 @@ Gravity:
   ld h,a
   
   
-  ld e,$38
+  ld e,$30
   ld d,$00
 ;  bit 7, h ; if negative always do gravity
 ;  jp nz, .always_do_gravity
@@ -95,6 +95,7 @@ Gravity:
   ld [wMainMomentumY+1], a
   ret
 
+
 MoveOutofLevel:
     ; Please place dy (1 or -1) into hl
     ; and this will modify wMainMomentumY and wMainY
@@ -103,7 +104,7 @@ MoveOutofLevel:
     push af
     push bc
     push hl
-    add hl, hl;multiply by 2
+    ; add hl, hl;multiply by 2
     ; griffpatch only add hl, hl;multiply by 4
     call Neg16
     ; now we need to load wMainY into de and then hl = hl + de
@@ -187,4 +188,50 @@ GameOver:
     ld [wScrollSpeedHigh+1],a
     ret
 Turn:
+    ret
+ScrollLevel:
+; 00000111 | 10101000
+;           &00000011 = 0 so we're good 
+; what we want isl
+;   000001 | 11101010 (don't want 00)
+
+; 0, 1, 2, 3, 4, 5, 6
+    ld a, [wScrollCounterLow]
+    and 3
+    ret nz
+; 0, 4, 8, 12 
+    ld a, [wScrollCounterLow]
+    ld e,a
+    ld a, [wScrollCounterLow+1]
+    ld d,a
+    srl d
+    rr e
+    srl d
+    rr e ;shift de 2 times
+    ld hl, (Level + 30) ;source
+    ld c, levelHeight       ;|
+    add hl, de;<-------------J
+    ld de, (_SCRN0+30) ;DEstanation
+    .levelcopy:
+    
+    ld a, [hl];_SCRN0 is tilemap5! width SCRN_X_B
+    ld [de], a
+
+    ld a,low(levelWidth)
+    add a,l
+    ld l,a
+    ld a,high(levelWidth)
+    adc a, h
+    ld h, a
+
+    ld a,$20
+    add a,e
+    ld e,a
+    ld a,0
+    adc a, d
+    ld d, a
+
+    dec c
+    jp nz, .levelcopy
+
     ret
