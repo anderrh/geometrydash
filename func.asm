@@ -208,10 +208,20 @@ ScrollLevel:
     rr e
     srl d
     rr e ;shift de 2 times
-    ld hl, (Level + 30) ;source
-    ld c, levelHeight       ;|
+    ld hl, (Level + 31) ;source
     add hl, de;<-------------J
-    ld de, (_SCRN0+30) ;DEstanation
+    ld de, (_SCRN0+31) ;DEstanation
+    ld a, [rSCX]
+    srl a
+    srl a
+    srl a
+    add a, e
+    ld e, a
+    ld a, 0
+    adc a, d
+    ld d, a
+    
+    ld c, levelHeight       ;|
     .levelcopy:
     
     ld a, [hl];_SCRN0 is tilemap5! width SCRN_X_B
