@@ -245,3 +245,94 @@ ScrollLevel:
     jp nz, .levelcopy
 
     ret
+
+
+CopyColumn:
+    
+    push bc
+    push de
+    push af
+    push hl
+    
+    ld a low((_SCRN0))
+    ld l,a
+    ld a,high((_SCRN0))
+    ld h,a
+    add de, hl
+    ld bc,hl
+    pop hl
+    push hl
+    ld a, low(Level)
+    ld e, a
+    ld a, high(Level)
+    ld d, a
+    add de ,hl
+    ;dest in bc
+    ;src in hde
+
+
+
+
+; the column 0 ... level-1 is in hl
+; de should 
+; the column destination number from 0-31 is in de
+    .StartCopying:
+        ;loop for copying
+
+
+
+
+
+; ; 0, 1, 2, 3, 4, 5, 6
+;     ld a, [wScrollCounterLow]
+;     and 3
+;     ret nz
+; ; 0, 4, 8, 12 
+;     ld a, [wScrollCounterLow]
+;     ld e,a
+;     ld a, [wScrollCounterLow+1]
+;     ld d,a
+;     srl d
+;     rr e
+;     srl d
+;     rr e ;shift de 2 times
+;     ld hl, (Level + 31) ;source
+;     add hl, de;<-------------J
+;     ld de, (_SCRN0+31) ;DEstanation
+;     ld a, [rSCX]
+;     srl a
+;     srl a
+;     srl a
+;     add a, e
+;     ld e, a
+;     ld a, 0
+;     adc a, d
+;     ld d, a
+    
+;     ld c, levelHeight       ;|
+;     .levelcopy:
+    
+;     ld a, [hl];_SCRN0 is tilemap5! width SCRN_X_B
+;     ld [de], a
+
+;     ld a,low(levelWidth)
+;     add a,l
+;     ld l,a
+;     ld a,high(levelWidth)
+;     adc a, h
+;     ld h, a
+
+;     ld a,$20
+;     add a,e
+;     ld e,a
+;     ld a,0
+;     adc a, d
+;     ld d, a
+
+;     dec c
+;     jp nz, .levelcopy
+     pop hl
+     pop af 
+     pop bc
+     pop de
+    ret
