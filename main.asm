@@ -214,8 +214,6 @@ INCLUDE "tiles.asm"
 
 INCLUDE "sprites.asm"
 
-INCLUDE "startlevel.asm"
-
 INCLUDE "level.asm"
 
 
