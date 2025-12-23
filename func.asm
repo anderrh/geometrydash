@@ -207,6 +207,8 @@ ScrollLevel:
     srl d
     rr e
     srl d
+    rr e
+    srl d
     rr e ;shift de 2 times
     ld hl, 31 ;source
     add hl, de;<-------------J (now it's column scroll + 31)
