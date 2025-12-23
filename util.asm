@@ -79,7 +79,8 @@ GetTileByPixel:
     add hl, hl ; position * 16
     add hl, hl ; position * 32
     ; Convert the X position to an offset.
-    ld a, b
+    ld a, [rSCX]
+    add a, b
     srl a ; a / 2
     srl a ; a / 4
     srl a ; a / 8
