@@ -25,10 +25,20 @@ WaitVBlank:
 		call Memcopy
 
     ; Copy the tilemap
-    ld de, Tilemap
-    ld hl, $9800
-    ld bc, TilemapEnd - Tilemap
-		call Memcopy
+    ;ld de, Tilemap
+    ;ld hl, $9800
+    ;ld bc, TilemapEnd - Tilemap
+		;call Memcopy
+    ld b ,0
+    ld de, 0
+    ld hl, 0
+    ld c ,$20
+    startuptilecopy:
+    dec c
+    ld e, c
+    ld l, c
+    call CopyColumn
+    jp nz, startuptilecopy
 
     ; Copy the paddle tile
     ld de, MainLeft

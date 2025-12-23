@@ -197,7 +197,7 @@ ScrollLevel:
 
 ; 0, 1, 2, 3, 4, 5, 6
     ld a, [wScrollCounterLow]
-    and 3
+    and 7
     ret nz
 ; 0, 4, 8, 12 
     ld a, [wScrollCounterLow]
@@ -208,77 +208,66 @@ ScrollLevel:
     rr e
     srl d
     rr e ;shift de 2 times
-    ld hl, (Level + 31) ;source
-    add hl, de;<-------------J
-    ld de, (_SCRN0+31) ;DEstanation
+    ld hl, 31 ;source
+    add hl, de;<-------------J (now it's column scroll + 31)
+    ld de, 31 ;DEstanation
     ld a, [rSCX]
     srl a
     srl a
     srl a
     add a, e
+    and a, 31
     ld e, a
-    ld a, 0
-    adc a, d
-    ld d, a
-    
-    ld c, levelHeight       ;|
-    .levelcopy:
-    
-    ld a, [hl];_SCRN0 is tilemap5! width SCRN_X_B
-    ld [de], a
-
-    ld a,low(levelWidth)
-    add a,l
-    ld l,a
-    ld a,high(levelWidth)
-    adc a, h
-    ld h, a
-
-    ld a,$20
-    add a,e
-    ld e,a
-    ld a,0
-    adc a, d
-    ld d, a
-
-    dec c
-    jp nz, .levelcopy
-
+    ld d, 0
+    call CopyColumn
     ret
 
 
 CopyColumn:
+; the column destination number from 0-31 is in de
+; the column source is in hl from 0 to LevelWidth.
+;     Remember to multiply hl by 32 to get the offset into Level
     
     push bc
     push de
     push af
     push hl
     
-    ld a low((_SCRN0))
-    ld l,a
-    ld a,high((_SCRN0))
-    ld h,a
-    add de, hl
-    ld bc,hl
+    ld hl, _SCRN0
+    add hl, de
+    ld c, l
+    ld b, h ; destination memory in BC
     pop hl
     push hl
-    ld a, low(Level)
-    ld e, a
-    ld a, high(Level)
-    ld d, a
-    add de ,hl
-    ;dest in bc
-    ;src in hde
-
-
-
-
-; the column 0 ... level-1 is in hl
-; de should 
-; the column destination number from 0-31 is in de
+    ; remember multiply hl by 32
+    add hl, hl
+    add hl, hl
+    add hl, hl
+    add hl, hl
+    add hl, hl
+    ld de, Level
+    add hl, de
+    ld d, b
+    ld e, c
+    ld c, levelHeight  
+    ; dest in [de]
+    ; src in [hl]
+    ; num to copy in c
     .StartCopying:
         ;loop for copying
+        ld a, [hli]
+        ld [de], a
+        ld a, $20
+        add a, e
+        ld e,a
+        ld a, 0
+        adc a, d
+        ld d, a
+        dec c
+        jp nz ,.StartCopying
+    
 
+    
 
 
 
