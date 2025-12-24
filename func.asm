@@ -1,60 +1,74 @@
 CheckFloorTile:
-    ;clobbers 
-    ; a, f, h, l, b ,c
-    ;ld a, [wMainX+1]
-    ;ld b, a
-    ;ld a, [wMainY+1]
-    ;ld c, a
-    ;ld a,c
-    ;add a, 4
-    ;ld c,a
-    ;call GetTileByPixel
-    ;call IsFloorTile
-    ;ret z
-    ;ld a, [wMainX+1]
-    ;ld b, a
-    ;ld a, [wMainY+1]
-    ;ld c, a
-    ;ld a,b
-    ;add a, 8
-    ;ld b,a
-    ;ld a,c
-    ;add a, 4
-    ;ld c,a
-    ;call GetTileByPixel
-    ;call IsFloorTile
-    ;ret z
+
     ld a, [wMainX+1]
     ld b, a
     ld a, [wMainY+1]
     ld c, a
     ld a,c
-    add a, 11
+    add a, 3
     ld c,a
-    call GetTileByPixel
+    call GetTilesByAPixel
+    ld a, b
     call IsFloorTile
     ret z
-    ld a, [wMainX+1]
-    ld b, a
-    ld a, [wMainY+1]
-    ld c, a
-    ld a,b
-    add a, 8
-    ld b,a
-    ld a,c
-    add a, 11
-    ld c,a
-    call GetTileByPixel
+    ld a, c
+    call IsFloorTile
+    ret z
+    ld a, d
+    call IsFloorTile
+    ret z
+    ld a, e
     call IsFloorTile
     ret
+
 IsFloorTile:
-    ld a, [hl]
     cp a, $11
     ret z
-    cp a, $20
-    ret z
     cp a, $21
+    ret z
+    cp a, $22
     ret 
+GetTilesByAPixel:
+    call GetTileByPixel
+    ; address of left tile is in hl
+    ld a, l
+    and a, 31
+    cp a, 31
+    jp z, .GetTilesRightEdge
+
+    ld a, [hli]
+    ; sub l, 
+    ld b, a
+    ld a, [hl]
+    ld c, a
+    ld de, 31
+    add hl, de
+    ld a, [hli]
+    ld d, a
+    ld a, [hl]
+    ld e, a
+    ret
+.GetTilesRightEdge:
+    ld a, [hli]
+    ; sub l, 
+    ld b, a
+    ld a, [hl]
+    ld c, a ; this really belongs in e later
+    ld de, 31
+    add hl, de
+    ld a, [hl]
+    ld d, a
+    ld e, c
+    push de
+    ld de,(-$3f)
+    add hl, de
+    ld a, [hl]
+    ld c, a
+    pop de
+
+    ret
+
+
 CheckUp:
     ld a, [wCurKeys]
     and a, PADF_UP
