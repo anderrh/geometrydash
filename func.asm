@@ -80,7 +80,7 @@ CheckUp:
     ret z
 Up:
     
-    ld a, $f0
+    ld a, $00
     ld [wMainMomentumY], a
     ld a, $fd
     ld [wMainMomentumY+1], a
@@ -133,12 +133,12 @@ MoveOutofLevel:
     ld a, h
     ld [wMainY + 1], a
     ;this is loop setup to get our counter bc setup to be |mMomentumY| + 8
-    ld a, [wMainMomentumY]
-    ld l, a
-    ld a, [wMainMomentumY+1]
+    ld a, 0
     ld h, a
+    ld a, [wMainMomentumY+1]
+    ld l, a
     call Abs16
-    ld e, $08
+    ld e, $02
     ld d, $00
     add hl, de
     ld b,h
