@@ -75,15 +75,11 @@ ClearOam:
 
     ; The ball starts out going up and to the right
     ld a, 1 ; 1 pixel per frame scrolling
-    ld [wScrollSpeedLow], a
+    ld [wScrollSpeed], a
     ld a, 0
-    ld [wScrollSpeedLow+1], a
-    ld [wScrollSpeedHigh], a
-    ld [wScrollSpeedHigh+1], a
-    ld [wScrollCounterLow], a
-    ld [wScrollCounterLow+1], a
-    ld [wScrollCounterHigh], a
-    ld [wScrollCounterHigh+1], a
+    ld [wScrollSpeed+1], a
+    ld [wScrollCounter], a
+    ld [wScrollCounter+1], a
     ld [wMainMomentumX], a
     ld [wMainMomentumY], a
     ld [wMainMomentumX+1], a
@@ -122,14 +118,36 @@ WaitVBlank2:
     cp 144
     jp c, WaitVBlank2
 
+    ; Update the OAM
+    ld a, [wMainY+1]
+    add a, 16
+    ld [_OAMRAM + 0],a
+    ld [_OAMRAM + 4],a
+
+    ld a, [wMainX+1]
+    add a, 8
+    ld [_OAMRAM + 1],a
+    add a, 8
+    ld [_OAMRAM + 5],a
+    
+    call UpdateKeys
 
     ld a, [wFrameCounter]
     inc a
     ld [wFrameCounter], a
-    ld hl, wScrollCounterLow
-    ld de, wScrollSpeedLow
-    call Add32
-    ld a, [wScrollCounterLow] ; TODO: prepare the tile map beyond 256
+    ld a, [wScrollCounter]
+    ld l, a
+    ld a, [wScrollCounter+1]
+    ld h, a
+    ld a, [wScrollSpeed]
+    ld e, a
+    ld a, [wScrollSpeed+1]
+    ld d, a
+    add hl, de
+    ld a, h
+    ld [wScrollCounter+1],a
+    ld a, l
+    ld [wScrollCounter],a
     ld [rSCX] ,a
     
     call ScrollLevel
@@ -158,21 +176,21 @@ WaitVBlank2:
 
 
     ; Update the OAM
-    ld a, [wMainY+1]
-    add a, 16
-    ld [_OAMRAM + 0],a
-    ld [_OAMRAM + 4],a
+    ; ld a, [wMainY+1]
+    ; add a, 16
+    ; ld [_OAMRAM + 0],a
+    ; ld [_OAMRAM + 4],a
 
-    ld a, [wMainX+1]
-    add a, 8
-    ld [_OAMRAM + 1],a
-    add a, 8
-    ld [_OAMRAM + 5],a
+    ; ld a, [wMainX+1]
+    ; add a, 8
+    ; ld [_OAMRAM + 1],a
+    ; add a, 8
+    ; ld [_OAMRAM + 5],a
 
     ; Add the ball's momentum to its position in OAM.
     
     ; First, check if the left button is pressed.
-    call UpdateKeys
+    
 
     
     

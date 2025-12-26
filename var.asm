@@ -1,10 +1,7 @@
 SECTION "Time", WRAM0
 wFrameCounter: db
-wScrollCounterLow: dw
-wScrollCounterHigh: dw
-wScrollSpeedLow: dw
-wScrollSpeedHigh: dw
-
+wScrollCounter: dw
+wScrollSpeed: dw
 
 SECTION "Input Variables", WRAM0
 wCurKeys: db

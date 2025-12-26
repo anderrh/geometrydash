@@ -62,6 +62,28 @@ UpdateKeys:
 .knownret
   ret
 
+
+
+; Convert a pixel position to a tilemap address
+; @param a: Y
+; @param hl: Address of 32 bit little endian scroll
+;
+; 
+; @return hl: tile address
+GetLevelTileAddressFromScrollFIXME:
+    push bc
+    push de
+    push hl
+    push af
+    ld c, a ; move y into C
+
+
+    pop af
+    pop hl
+    pop bc
+    pop de
+    ret
+
 ; Convert a pixel position to a tilemap address
 ; hl = $9800 + X + Y * 32
 ; @param b: X

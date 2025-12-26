@@ -138,7 +138,7 @@ MoveOutofLevel:
     ld a, [wMainMomentumY+1]
     ld l, a
     call Abs16
-    ld e, $02
+    ld e, $04
     ld d, $00
     add hl, de
     ld b,h
@@ -196,10 +196,8 @@ GameOver:
     ld a, 1
     ld [wGameOver],a
     ld a, 0
-    ld [wScrollSpeedLow],a
-    ld [wScrollSpeedLow+1],a
-    ld [wScrollSpeedHigh],a
-    ld [wScrollSpeedHigh+1],a
+    ld [wScrollSpeed],a
+    ld [wScrollSpeed+1],a
     ret
 Turn:
     ret
@@ -210,13 +208,13 @@ ScrollLevel:
 ;   000001 | 11101010 (don't want 00)
 
 ; 0, 1, 2, 3, 4, 5, 6
-    ld a, [wScrollCounterLow]
+    ld a, [wScrollCounter]
     and 7
     ret nz
 ; 0, 4, 8, 12 
-    ld a, [wScrollCounterLow]
+    ld a, [wScrollCounter]
     ld e,a
-    ld a, [wScrollCounterLow+1]
+    ld a, [wScrollCounter+1]
     ld d,a
     srl d
     rr e
