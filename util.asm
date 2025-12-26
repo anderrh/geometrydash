@@ -65,22 +65,48 @@ UpdateKeys:
 
 
 ; Convert a pixel position to a tilemap address
-; @param a: Y
-; @param hl: Address of 32 bit little endian scroll
+; @param b: X
+; @param c: Y
 ;
 ; 
 ; @return hl: tile address
-GetLevelTileAddressFromScrollFIXME:
-    push bc
+GetLevelTileAddressFromScroll:
     push de
-    push hl
     push af
-    ld c, a ; move y into C
+    ;don't push hl(our work/:) 
+    push bc
+    ld e, b
+    ld d, 0 ; load X (b) into de pix
+    ld a, [wScrollCounter]
+    ld l, a
+    ld a, [wScrollCounter+1]
+    ld h, a ; load Scroll X into hl pix
+    add hl, de ; we need to add scroll X to our X pos pix
+    srl h
+    rr l
+    srl h
+    rr l
+    srl h
+    rr l ; we need to convert the type to blocks (div 8(blocks are 8 wide)) 
+    add hl, hl
+    add hl, hl
+    add hl, hl
+    add hl, hl
+    add hl, hl ; we need to multiply hl by 32; this is because 32 blocks per collem other wise it would progress in the y direction
+    ld e, c
+    ld d, 0 ;we need to get the y pos too 
+    srl e
+    srl e
+    srl e ; we need to change the unit to blocks(div 8(blocks are 8 tall))
+    ;we don't multipy by level hight because we are modifying y
+    add hl, de ;add y to x (the higher bits are 32* bigger(x))
+    ld de, Level; find where the level location is inside the mem
+    add hl, de ; we have to actuly add to that location in mem
+    ;done
 
-
-    pop af
-    pop hl
     pop bc
+    ;don't pop hl(our work/:) 
+    pop af
     pop de
     ret
 

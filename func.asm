@@ -29,12 +29,8 @@ IsFloorTile:
     cp a, $22
     ret 
 GetTilesByAPixel:
-    call GetTileByPixel
+    call GetLevelTileAddressFromScroll
     ; address of left tile is in hl
-    ld a, l
-    and a, 31
-    cp a, 31
-    jp z, .GetTilesRightEdge
 
     ld a, [hli]
     ; sub l, 
@@ -47,25 +43,6 @@ GetTilesByAPixel:
     ld d, a
     ld a, [hl]
     ld e, a
-    ret
-.GetTilesRightEdge:
-    ld a, [hli]
-    ; sub l, 
-    ld b, a
-    ld a, [hl]
-    ld c, a ; this really belongs in e later
-    ld de, 31
-    add hl, de
-    ld a, [hl]
-    ld d, a
-    ld e, c
-    push de
-    ld de,(-$3f)
-    add hl, de
-    ld a, [hl]
-    ld c, a
-    pop de
-
     ret
 
 
@@ -200,6 +177,9 @@ GameOver:
     ld [wScrollSpeed+1],a
     ret
 Turn:
+    ld a, [wMainAngle]
+    inc a
+    ld [wMainAngle], a
     ret
 ScrollLevel:
 ; 00000111 | 10101000

@@ -123,6 +123,17 @@ WaitVBlank2:
     add a, 16
     ld [_OAMRAM + 0],a
     ld [_OAMRAM + 4],a
+    ld a, [wMainAngle]
+    srl a
+    srl a
+    srl a
+    and a, 3
+    add a, a
+    add a, a
+    ld [_OAMRAM + 2],a
+    inc a
+    inc a
+    ld [_OAMRAM + 6],a
 
     ld a, [wMainX+1]
     add a, 8
@@ -208,6 +219,8 @@ PlayerMovement:
   ; if not touching ground, go to .DoneTouchingGround
   jp nz ,.DoneTouchingGround
     ; if Speed < 0 (bit 7 wMainMomentumY + 1) go to BonkedCeiling
+    ld a, 0
+    ld [wMainAngle], a
     ld a ,[wMainMomentumY+1]
     bit 7,a 
     jp nz ,.BonkedCeiling
