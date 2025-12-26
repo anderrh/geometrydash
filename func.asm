@@ -138,7 +138,7 @@ MoveOutofLevel:
     ld a, [wMainMomentumY+1]
     ld l, a
     call Abs16
-    ld e, $04
+    ld e, $02
     ld d, $00
     add hl, de
     ld b,h
