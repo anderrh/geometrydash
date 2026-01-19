@@ -19,6 +19,34 @@ CheckFloorTile:
     call IsFloorTile
     ret
 reset:
+    ld a, 1 ; 1 pixel per frame scrolling
+    ld [wScrollSpeed], a
+    ld a, 0
+    ld [rSCX] ,a
+
+    ld a, 0
+    ld [wMainMomentumX], a
+    ld [wMainMomentumY], a
+    ld [wMainMomentumX+1], a
+    ld [wMainMomentumY+1], a
+    ld [wMainX], a
+    ld [wMainY], a
+    ld [wScrollSpeed+1], a
+    ld [wScrollCounter], a
+    ld [wScrollCounter+1], a
+    ld a,20
+    ld [wMainX+1], a
+    ld [wMainY+1], a
+
+    ld b ,0
+    ld de, 0
+    ld hl, 0
+    ld a, [wGameOver]
+    sub a, ($ff - $20)
+    ld c, a
+    ld e, c
+    ld l, c
+    call CopyColumn
     ret
 IsFloorTile:
     cp a, $11
@@ -195,7 +223,11 @@ MoveOutofLevel:
     ret
 
 GameOver:
+    ld a, [wGameOver]
+    or a
+    jp nz, .nza
     ld a, 1
+    .nza:
     ld [wGameOver],a
     ld a, 0
     ld [wScrollSpeed],a

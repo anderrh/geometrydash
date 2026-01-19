@@ -121,8 +121,8 @@ WaitVBlank2:
     cp 144
     jp c, WaitVBlank2
     ld a, [wGameOver]
-    cp a, $ff 
-    jp nz,gameb
+    cp a, ($ff - $20) 
+    jp c,gameb
     call reset
     gameb:
 
