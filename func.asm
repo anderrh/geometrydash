@@ -226,7 +226,7 @@ GameOver:
     ld a, [wGameOver]
     or a
     jp nz, .nza
-    ld a, 1
+    ld a, $7f
     .nza:
     ld [wGameOver],a
     ld a, 0
