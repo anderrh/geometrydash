@@ -77,20 +77,22 @@ ClearOam:
       ld a, 1 ; 1 pixel per frame scrolling
       ld [wScrollSpeed], a
       ld a, 0
+
+      ld a, 0
       ld [wGameOver], a
-      ld [wScrollSpeed+1], a
-      ld [wScrollCounter], a
-      ld [wScrollCounter+1], a
       ld [wMainMomentumX], a
       ld [wMainMomentumY], a
       ld [wMainMomentumX+1], a
       ld [wMainMomentumY+1], a
       ld [wMainX], a
       ld [wMainY], a
+      ld [wScrollSpeed+1], a
+      ld [wScrollCounter], a
+      ld [wScrollCounter+1], a
       ld a,20
       ld [wMainX+1], a
-      ld a,20
       ld [wMainY+1], a
+      
 
 
     ; Turn the LCD on
@@ -118,7 +120,11 @@ WaitVBlank2:
     ld a, [rLY]
     cp 144
     jp c, WaitVBlank2
-
+    ld a, [wGameOver]
+    cp a, $ff 
+    jp nz,gameb
+    call reset
+    gameb:
 
     ; Update the OAM
     ld a, [wMainY+1]
@@ -190,9 +196,7 @@ WaitVBlank2:
     or a, 0
     jp z, gamea
     inc a
-    cp a, $ff 
-    jp z,gamea
-    call reset
+    ld [wGameOver], a
     gamea:
     call CheckSpikeTile
     jp nz, nospike
