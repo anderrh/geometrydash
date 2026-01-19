@@ -3,8 +3,6 @@ CheckFloorTile:
     ld a, [wMainX+1]
     ld b, a
     ld a, [wMainY+1]
-    ld c, a
-    ld a,c
     add a, 3
     ld c,a
     call GetTilesByAPixel
@@ -20,7 +18,8 @@ CheckFloorTile:
     ld a, e
     call IsFloorTile
     ret
-
+reset:
+    ret
 IsFloorTile:
     cp a, $11
     ret z
@@ -54,17 +53,9 @@ CheckSpikeTile:
     add a, 7
     ld c,a
     call GetTileByPixel
-    ld a, b
+    ld a, [hl]
     call IsSpikeTile
-    ret z
-    ld a, c
-    call IsSpikeTile
-    ret z
-    ld a, d
-    call IsSpikeTile
-    ret z
-    ld a, e
-    call IsSpikeTile
+    ret
     ret
 
 IsSpikeTile:
