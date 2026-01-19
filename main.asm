@@ -74,22 +74,22 @@ ClearOam:
     ld [hli], a
 
     ; The ball starts out going up and to the right
-    ld a, 1 ; 1 pixel per frame scrolling
-    ld [wScrollSpeed], a
-    ld a, 0
-    ld [wScrollSpeed+1], a
-    ld [wScrollCounter], a
-    ld [wScrollCounter+1], a
-    ld [wMainMomentumX], a
-    ld [wMainMomentumY], a
-    ld [wMainMomentumX+1], a
-    ld [wMainMomentumY+1], a
-    ld [wMainX], a
-    ld [wMainY], a
-    ld a,20
-    ld [wMainX+1], a
-    ld a,20
-    ld [wMainY+1], a
+      ld a, 1 ; 1 pixel per frame scrolling
+      ld [wScrollSpeed], a
+      ld a, 0
+      ld [wScrollSpeed+1], a
+      ld [wScrollCounter], a
+      ld [wScrollCounter+1], a
+      ld [wMainMomentumX], a
+      ld [wMainMomentumY], a
+      ld [wMainMomentumX+1], a
+      ld [wMainMomentumY+1], a
+      ld [wMainX], a
+      ld [wMainY], a
+      ld a,20
+      ld [wMainX+1], a
+      ld a,20
+      ld [wMainY+1], a
 
 
     ; Turn the LCD on
@@ -184,6 +184,11 @@ WaitVBlank2:
     ld a, h
     ld [wMainY + 1], a
     call PlayerMovement
+    call CheckSpikeTile
+    jp nz, nospike
+    call GameOver
+    nospike:
+    
 
 
     ; Update the OAM

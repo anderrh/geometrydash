@@ -45,6 +45,40 @@ GetTilesByAPixel:
     ld e, a
     ret
 
+CheckSpikeTile:
+
+    ld a, [wMainX+1]
+    add a, 7
+    ld b, a
+    ld a, [wMainY+1]
+    add a, 7
+    ld c,a
+    call GetTileByPixel
+    ld a, b
+    call IsSpikeTile
+    ret z
+    ld a, c
+    call IsSpikeTile
+    ret z
+    ld a, d
+    call IsSpikeTile
+    ret z
+    ld a, e
+    call IsSpikeTile
+    ret
+
+IsSpikeTile:
+    cp a, $12
+    ret z
+    cp a, $13
+    ret z
+    cp a, $14
+    ret z
+    cp a, $15
+    ret z
+    cp a, $16
+    ret 
+
 
 CheckUp:
     ld a, [wCurKeys]
