@@ -1,6 +1,6 @@
-SECTION "LevelData", ROMX, BANK[2]
+SECTION "Level1Data", ROMX[$4000], BANK[2]
 
-Level:
+Level:  ; All levels use this label at $4000
 
   db ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, 
   db ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, 

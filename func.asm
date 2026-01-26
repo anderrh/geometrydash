@@ -296,8 +296,8 @@ CopyColumn:
     add hl, hl
     add hl, hl
     add hl, hl
-    ; Switch to bank 2 for Level data
-    ld a, 2
+    ; Switch to current level bank
+    ld a, [wCurrentLevelBank]
     ld [$2000], a
     ld de, Level
     add hl, de

@@ -18,6 +18,10 @@ WaitVBlank:
     ld a, 0
     ld [rLCDC], a
 
+    ; Initialize level bank before any level access
+    ld a, 2  ; First level is in bank 2
+    ld [wCurrentLevelBank], a
+
     ; Copy the tile data
     ld de, Tiles
     ld hl, $9000

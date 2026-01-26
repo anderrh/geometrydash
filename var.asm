@@ -17,3 +17,5 @@ wMainAngle:dw
 SECTION "Score", WRAM0
 wScore: db
 wGameOver:db
+wMusicEnabled: db
+wCurrentLevelBank: db
