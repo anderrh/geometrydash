@@ -161,102 +161,58 @@ def main():
     # Format: (note1, note2) - these alternate, with note2 being ~5th above note1
     # "4 apart" = perfect 5th (7 semitones)
 
-    two_note_pairs = [
-        # Section A: Original request - C G C G C G C G, then G D, then A E, then F C
+    # ============================================
+    # PART 1: Opening - the good beginning (patterns 0-7)
+    # ============================================
+    opening_pairs = [
         ('C-2', 'G-2'),   # C and G (perfect 5th)
         ('G-2', 'D-3'),   # G and D (perfect 5th)
         ('A-2', 'E-3'),   # A and E (perfect 5th)
         ('F-2', 'C-3'),   # F and C (perfect 5th)
-
-        # Section B: More pairs - building familiarity
         ('D-2', 'A-2'),   # D and A
         ('E-2', 'B-2'),   # E and B
         ('G-2', 'D-3'),   # G and D again
         ('C-2', 'G-2'),   # back to C and G
-
-        # Section C: Rhymes with A but higher register - leaning in
-        ('C-3', 'G-3'),   # C and G higher (echo of section A)
-        ('G-3', 'D-4'),   # G and D higher
-        ('A-2', 'E-3'),   # A and E (familiar)
-        ('F-3', 'C-4'),   # F and C higher
-
-        # Section D: Going off the rails - unexpected intervals
-        ('C-2', 'F#2'),   # Tritone! (the devil's interval)
-        ('G-2', 'C#3'),   # Another tritone
-        ('D-2', 'G#2'),   # Tritone again
-        ('A-2', 'D#3'),   # Tritone - tension!
-
-        # Section E: Chromatic descent - sliding down
-        ('C-3', 'B-2'),   # Half step down
-        ('B-2', 'A#2'),   # Keep sliding
-        ('A#2', 'A-2'),   # More sliding
-        ('A-2', 'G#2'),   # Chromatic tension
-
-        # Section F: Resolution - back to familiar but with twist
-        ('G-2', 'D-3'),   # Familiar G-D
-        ('C-2', 'G-2'),   # Back home to C-G
-        ('F-2', 'C-3'),   # F-C comfort
-        ('C-2', 'E-2'),   # End on major 3rd - warm resolution
-
-        # Section G: Wild octave jumps
-        ('C-2', 'C-3'),   # Octave jump
-        ('G-2', 'G-3'),   # Octave jump
-        ('D-2', 'D-3'),   # Octave jump
-        ('A-2', 'A-3'),   # Octave jump
-
-        # Section H: Final return home
-        ('C-2', 'G-2'),   # Classic C-G
-        ('G-2', 'D-3'),   # G-D
-        ('C-2', 'G-2'),   # C-G again
-        ('C-2', 'G-2'),   # Hold on home
     ]
 
-    # Four note pairs - just root and fifth alternating
-    four_note_sequences = [
-        # Familiar progressions
-        ('C-2', 'G-2'),   # C major feel
-        ('G-2', 'D-3'),   # G major feel
-        ('A-2', 'E-3'),   # A minor feel
-        ('F-2', 'C-3'),   # F major feel
-        # Wilder ones
-        ('E-2', 'C-3'),   # Minor 6th - darker
-        ('D-2', 'B-2'),   # Major 6th
-        ('C-2', 'A-2'),   # Minor 6th down
-        ('G-2', 'E-3'),   # Major 6th up
+    # ============================================
+    # PART 2: Melodic hook - actual melody (patterns 8-15)
+    # These are 8-note melodies, not just alternating pairs
+    # ============================================
+    melodic_sequences = [
+        # Melody 1: Rising hopeful tune
+        ['C-2', 'D-2', 'E-2', 'G-2', 'E-2', 'D-2', 'C-2', 'G-2'],
+        # Melody 2: Answer phrase
+        ['G-2', 'A-2', 'B-2', 'D-3', 'B-2', 'A-2', 'G-2', 'D-3'],
+        # Melody 3: Variation on melody 1
+        ['C-2', 'E-2', 'G-2', 'C-3', 'G-2', 'E-2', 'C-2', 'G-2'],
+        # Melody 4: Resolution phrase
+        ['A-2', 'G-2', 'E-2', 'D-2', 'C-2', 'D-2', 'E-2', 'C-2'],
+        # Melody 5: Higher register hook
+        ['C-3', 'D-3', 'E-3', 'G-3', 'E-3', 'D-3', 'C-3', 'G-2'],
+        # Melody 6: Descending line
+        ['G-3', 'E-3', 'D-3', 'C-3', 'B-2', 'A-2', 'G-2', 'C-3'],
+        # Melody 7: Bouncy hook
+        ['C-2', 'G-2', 'E-2', 'G-2', 'C-3', 'G-2', 'E-2', 'C-2'],
+        # Melody 8: Final hook phrase
+        ['G-2', 'C-3', 'E-3', 'D-3', 'C-3', 'G-2', 'E-2', 'C-2'],
     ]
+
+    # ============================================
+    # PART 3: Return to opening (reuse patterns 0-7)
+    # This is handled in pattern_order below
+    # ============================================
 
     patterns = []
 
-    # Generate two-note alternating patterns
-    # Each pattern = 64 rows, 8 notes per pattern (8 rows each)
-    for pair in two_note_pairs:
-        ch1_notes = []
-        ch2_notes = []  # quiet accompaniment
-        ch3_notes = []
-        ch4_notes = []
-
-        note1, note2 = pair
-        rows_per_note = 8  # 8 rows per note, 8 notes = 64 rows
-
-        for i in range(8):  # 8 notes: n1 n2 n1 n2 n1 n2 n1 n2
-            row = i * rows_per_note
-            note = note1 if i % 2 == 0 else note2
-
-            # Main bass note on channel 1 only - clean, no accompaniment
-            ch1_notes.append((row, note, BASS_SAMPLE, 64))
-
-        speed = 2 if len(patterns) == 0 else None  # Faster tempo
-        pattern = create_pattern(ch1_notes, ch2_notes, ch3_notes, ch4_notes, set_speed=speed)
-        patterns.append(pattern)
-
-    # Generate additional patterns with the four_note_sequences
-    for seq in four_note_sequences:
+    # Generate opening patterns (alternating two notes)
+    for pair in opening_pairs:
         ch1_notes = []
         ch2_notes = []
         ch3_notes = []
         ch4_notes = []
 
-        note1, note2 = seq
+        note1, note2 = pair
         rows_per_note = 8
 
         for i in range(8):
@@ -264,20 +220,40 @@ def main():
             note = note1 if i % 2 == 0 else note2
             ch1_notes.append((row, note, BASS_SAMPLE, 64))
 
+        speed = 2 if len(patterns) == 0 else None
+        pattern = create_pattern(ch1_notes, ch2_notes, ch3_notes, ch4_notes, set_speed=speed)
+        patterns.append(pattern)
+
+    # Generate melodic hook patterns (8 different notes per pattern)
+    for melody in melodic_sequences:
+        ch1_notes = []
+        ch2_notes = []
+        ch3_notes = []
+        ch4_notes = []
+
+        rows_per_note = 8
+
+        for i, note in enumerate(melody):
+            row = i * rows_per_note
+            ch1_notes.append((row, note, BASS_SAMPLE, 64))
+
         pattern = create_pattern(ch1_notes, ch2_notes, ch3_notes, ch4_notes)
         patterns.append(pattern)
 
-    # Create pattern order - at speed 2, each pattern is ~1.02 seconds
-    # Max 128 entries = ~130 seconds = ~2.2 minutes at speed 2
+    # Create pattern order with clear structure:
+    # A: Opening (patterns 0-7) - the good beginning
+    # B: Melodic hook (patterns 8-15) - memorable melody
+    #
+    # Structure: A -> B -> A -> B -> A -> B -> A -> B (repeat 8 times = 128 entries)
+
     pattern_order = []
 
-    # Play through all patterns, then add extra from the beginning
-    pattern_order.extend(range(len(patterns)))
-    pattern_order.extend(range(len(patterns)))
-    pattern_order.extend(range(len(patterns)))
-    pattern_order.extend(range(len(patterns)))  # Fill to max
+    # 8 rounds of A-B to fill 128 entries
+    for _ in range(8):
+        pattern_order.extend(range(0, 8))      # A: opening
+        pattern_order.extend(range(8, 16))     # B: melodic hook
 
-    # MOD format supports up to 128 entries in pattern order
+    # 8 rounds × 16 patterns = 128 entries exactly
     if len(pattern_order) > 128:
         pattern_order = pattern_order[:128]
 
