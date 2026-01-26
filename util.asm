@@ -100,6 +100,9 @@ GetLevelTileAddressFromScroll:
     srl e ; we need to change the unit to blocks(div 8(blocks are 8 tall))
     ;we don't multipy by level hight because we are modifying y
     add hl, de ;add y to x (the higher bits are 32* bigger(x))
+    ; Switch to bank 2 for Level data
+    ld a, 2
+    ld [$2000], a
     ld de, Level; find where the level location is inside the mem
     add hl, de ; we have to actuly add to that location in mem
     ;done

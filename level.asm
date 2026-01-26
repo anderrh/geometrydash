@@ -1,4 +1,4 @@
-
+SECTION "LevelData", ROMX, BANK[2]
 
 Level:
 

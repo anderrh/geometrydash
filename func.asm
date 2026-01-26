@@ -296,6 +296,9 @@ CopyColumn:
     add hl, hl
     add hl, hl
     add hl, hl
+    ; Switch to bank 2 for Level data
+    ld a, 2
+    ld [$2000], a
     ld de, Level
     add hl, de
     ld d, b
