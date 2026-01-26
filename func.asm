@@ -19,6 +19,16 @@ CheckFloorTile:
     call IsFloorTile
     ret
 reset:
+    ; Restart music if enabled
+    ld a, [wMusicEnabled]
+    or a
+    jr z, .skipMusicReset
+    ld de, musi_data
+    ld bc, BANK(musi_data)
+    ld a, $05
+    call gbt_play
+.skipMusicReset:
+
     ld a, 1 ; 1 pixel per frame scrolling
     ld [wScrollSpeed], a
     ld a, 0

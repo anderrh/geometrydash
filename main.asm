@@ -1,5 +1,7 @@
 INCLUDE "hardware.inc"
 
+SECTION "VBL interrupt vector", ROM0[$0040]
+    reti
 
 SECTION "header", ROM0[$100]
 
@@ -115,7 +117,22 @@ ClearOam:
     ld [wCurKeys], a
     ld [wNewKeys], a
     ld [wScore], a
+    ld a, 1
+    ld [wMusicEnabled], a
 
+    ld      sp,$D000 ; Set stack
+
+    ld      a,$01
+    ld      [rIE],a ; Enable VBL interrupt
+
+    ei
+
+    ld      de,musi_data
+    ld      bc,BANK(musi_data)
+    ld      a,$05
+    call    gbt_play ; Play song
+
+        
 Main:
     ld a, [rLY]
     cp 144
@@ -154,6 +171,24 @@ WaitVBlank2:
     ld [_OAMRAM + 5],a
     
     call UpdateKeys
+
+    ; Check select button for music toggle
+    ld a, [wNewKeys]
+    and a, PADF_SELECT
+    jr z, .noMusicToggle
+    ; Toggle music
+    ld a, [wMusicEnabled]
+    xor a, 1
+    ld [wMusicEnabled], a
+    jr z, .pauseMusic
+    ; Enable music - restart it
+    ld a, 1
+    call gbt_pause
+    jr .noMusicToggle
+.pauseMusic:
+    ld a, 0
+    call gbt_pause
+.noMusicToggle:
 
     ld a, [wFrameCounter]
     inc a
@@ -229,7 +264,7 @@ WaitVBlank2:
     
     
 ; Then check the right button.
-
+    call    gbt_update
     jp Main
 
 
@@ -274,3 +309,6 @@ INCLUDE "level.asm"
 
 
 INCLUDE "var.asm"
+INCLUDE "musi.asm"
+INCLUDE "gbt_player.asm"
+INCLUDE "gbt_player_bank1.asm"        

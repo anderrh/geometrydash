@@ -154,8 +154,8 @@ def main():
     # 14: Ch 3 - Square Wave
     # 15: Ch 3 - Sine Wave
 
-    # Use smoother wave channel instruments (64 bytes, less clicky)
-    BASS_SAMPLE = 13     # Sawtooth Wave - smooth and full
+    # Wave channel sample (64 bytes) - loops cleaner than short pulse waves
+    BASS_SAMPLE = 12     # Pulse+Tri Wave - softer, 64 bytes
 
     # Alternating note pairs - each pair repeats 4 times (8 notes per pattern)
     # Format: (note1, note2) - these alternate, with note2 being ~5th above note1
@@ -236,7 +236,7 @@ def main():
 
     patterns = []
 
-    # Generate opening patterns (alternating two notes)
+    # Generate opening patterns (alternating two notes) - simple, clean
     for pair in opening_pairs:
         ch1_notes = []
         ch2_notes = []
@@ -249,13 +249,14 @@ def main():
         for i in range(8):
             row = i * rows_per_note
             note = note1 if i % 2 == 0 else note2
-            ch1_notes.append((row, note, BASS_SAMPLE, 64))
+            # Single note, low volume for background music
+            ch1_notes.append((row, note, BASS_SAMPLE, 20))
 
         speed = 2 if len(patterns) == 0 else None
         pattern = create_pattern(ch1_notes, ch2_notes, ch3_notes, ch4_notes, set_speed=speed)
         patterns.append(pattern)
 
-    # Generate all melodic variations
+    # Generate all melodic variations - simple, clean
     all_melodic = [melodic_B1, melodic_B2, melodic_B3, melodic_B4]
 
     for melodic_section in all_melodic:
@@ -270,7 +271,8 @@ def main():
             for i, note in enumerate(melody):
                 row = i * rows_per_note
                 if note in NOTE_PERIODS:
-                    ch1_notes.append((row, note, BASS_SAMPLE, 64))
+                    # Single note, low volume for background music
+                    ch1_notes.append((row, note, BASS_SAMPLE, 20))
 
             pattern = create_pattern(ch1_notes, ch2_notes, ch3_notes, ch4_notes)
             patterns.append(pattern)
