@@ -176,26 +176,57 @@ def main():
     ]
 
     # ============================================
-    # PART 2: Melodic hook - actual melody (patterns 8-15)
-    # These are 8-note melodies, not just alternating pairs
+    # PART 2: Melodic hooks in MINOR KEY with variations
+    # C minor scale: C D Eb F G Ab Bb C
+    # Each variation shifts or surprises
     # ============================================
-    melodic_sequences = [
-        # Melody 1: Rising hopeful tune
-        ['C-2', 'D-2', 'E-2', 'G-2', 'E-2', 'D-2', 'C-2', 'G-2'],
-        # Melody 2: Answer phrase
-        ['G-2', 'A-2', 'B-2', 'D-3', 'B-2', 'A-2', 'G-2', 'D-3'],
-        # Melody 3: Variation on melody 1
-        ['C-2', 'E-2', 'G-2', 'C-3', 'G-2', 'E-2', 'C-2', 'G-2'],
-        # Melody 4: Resolution phrase
-        ['A-2', 'G-2', 'E-2', 'D-2', 'C-2', 'D-2', 'E-2', 'C-2'],
-        # Melody 5: Higher register hook
-        ['C-3', 'D-3', 'E-3', 'G-3', 'E-3', 'D-3', 'C-3', 'G-2'],
-        # Melody 6: Descending line
-        ['G-3', 'E-3', 'D-3', 'C-3', 'B-2', 'A-2', 'G-2', 'C-3'],
-        # Melody 7: Bouncy hook
-        ['C-2', 'G-2', 'E-2', 'G-2', 'C-3', 'G-2', 'E-2', 'C-2'],
-        # Melody 8: Final hook phrase
-        ['G-2', 'C-3', 'E-3', 'D-3', 'C-3', 'G-2', 'E-2', 'C-2'],
+
+    # B1: Original C minor melodic hook (patterns 8-15)
+    melodic_B1 = [
+        ['C-2', 'D-2', 'D#2', 'G-2', 'D#2', 'D-2', 'C-2', 'G-2'],      # Rising minor
+        ['G-2', 'G#2', 'A#2', 'D-3', 'A#2', 'G#2', 'G-2', 'D-3'],      # Answer in minor
+        ['C-2', 'D#2', 'G-2', 'C-3', 'G-2', 'D#2', 'C-2', 'G-2'],      # Minor arpeggio
+        ['G#2', 'G-2', 'D#2', 'D-2', 'C-2', 'D-2', 'D#2', 'C-2'],      # Descending resolve
+        ['C-3', 'D-3', 'D#3', 'G-3', 'D#3', 'D-3', 'C-3', 'G-2'],      # Higher register
+        ['G-3', 'D#3', 'D-3', 'C-3', 'A#2', 'G#2', 'G-2', 'C-3'],      # Descending minor
+        ['C-2', 'G-2', 'D#2', 'G-2', 'C-3', 'G-2', 'D#2', 'C-2'],      # Bouncy minor
+        ['G-2', 'C-3', 'D#3', 'D-3', 'C-3', 'G-2', 'D#2', 'C-2'],      # Final phrase
+    ]
+
+    # B2: Shifted UP 2 semitones (D minor) - surprise! (patterns 16-23)
+    melodic_B2 = [
+        ['D-2', 'E-2', 'F-2', 'A-2', 'F-2', 'E-2', 'D-2', 'A-2'],      # D minor rising
+        ['A-2', 'A#2', 'C-3', 'E-3', 'C-3', 'A#2', 'A-2', 'E-3'],      # Answer
+        ['D-2', 'F-2', 'A-2', 'D-3', 'A-2', 'F-2', 'D-2', 'A-2'],      # Arpeggio
+        ['A#2', 'A-2', 'F-2', 'E-2', 'D-2', 'E-2', 'F-2', 'D-2'],      # Resolve
+        ['D-3', 'E-3', 'F-3', 'A-3', 'F-3', 'E-3', 'D-3', 'A-2'],      # High
+        ['A-3', 'F-3', 'E-3', 'D-3', 'C-3', 'A#2', 'A-2', 'D-3'],      # Descend
+        ['D-2', 'A-2', 'F-2', 'A-2', 'D-3', 'A-2', 'F-2', 'D-2'],      # Bouncy
+        ['A-2', 'D-3', 'F-3', 'E-3', 'D-3', 'A-2', 'F-2', 'D-2'],      # Final
+    ]
+
+    # B3: Shifted UP another 2 (E minor) - building tension! (patterns 24-31)
+    melodic_B3 = [
+        ['E-2', 'F#2', 'G-2', 'B-2', 'G-2', 'F#2', 'E-2', 'B-2'],      # E minor rising
+        ['B-2', 'C-3', 'D-3', 'F#3', 'D-3', 'C-3', 'B-2', 'F#3'],      # Answer
+        ['E-2', 'G-2', 'B-2', 'E-3', 'B-2', 'G-2', 'E-2', 'B-2'],      # Arpeggio
+        ['C-3', 'B-2', 'G-2', 'F#2', 'E-2', 'F#2', 'G-2', 'E-2'],      # Resolve
+        ['E-3', 'F#3', 'G-3', 'B-3', 'G-3', 'F#3', 'E-3', 'B-2'],      # High
+        ['B-3', 'G-3', 'F#3', 'E-3', 'D-3', 'C-3', 'B-2', 'E-3'],      # Descend
+        ['E-2', 'B-2', 'G-2', 'B-2', 'E-3', 'B-2', 'G-2', 'E-2'],      # Bouncy
+        ['B-2', 'E-3', 'G-3', 'F#3', 'E-3', 'B-2', 'G-2', 'E-2'],      # Final
+    ]
+
+    # B4: SURPRISE - drop to A minor (darker) (patterns 32-39)
+    melodic_B4 = [
+        ['A-2', 'B-2', 'C-3', 'E-3', 'C-3', 'B-2', 'A-2', 'E-3'],      # A minor - darker!
+        ['E-3', 'F-3', 'G-3', 'B-3', 'G-3', 'F-3', 'E-3', 'B-3'],      # Answer high
+        ['A-2', 'C-3', 'E-3', 'A-3', 'E-3', 'C-3', 'A-2', 'E-3'],      # Arpeggio
+        ['F-3', 'E-3', 'C-3', 'B-2', 'A-2', 'B-2', 'C-3', 'A-2'],      # Resolve
+        ['A-3', 'B-3', 'C-4', 'E-4', 'C-4', 'B-3', 'A-3', 'E-3'],      # Very high!
+        ['E-4', 'C-4', 'B-3', 'A-3', 'G-3', 'F-3', 'E-3', 'A-3'],      # Big descend
+        ['A-2', 'E-3', 'C-3', 'E-3', 'A-3', 'E-3', 'C-3', 'A-2'],      # Bouncy
+        ['E-3', 'A-3', 'C-4', 'B-3', 'A-3', 'E-3', 'C-3', 'A-2'],      # Final dramatic
     ]
 
     # ============================================
@@ -224,36 +255,69 @@ def main():
         pattern = create_pattern(ch1_notes, ch2_notes, ch3_notes, ch4_notes, set_speed=speed)
         patterns.append(pattern)
 
-    # Generate melodic hook patterns (8 different notes per pattern)
-    for melody in melodic_sequences:
-        ch1_notes = []
-        ch2_notes = []
-        ch3_notes = []
-        ch4_notes = []
+    # Generate all melodic variations
+    all_melodic = [melodic_B1, melodic_B2, melodic_B3, melodic_B4]
 
-        rows_per_note = 8
+    for melodic_section in all_melodic:
+        for melody in melodic_section:
+            ch1_notes = []
+            ch2_notes = []
+            ch3_notes = []
+            ch4_notes = []
 
-        for i, note in enumerate(melody):
-            row = i * rows_per_note
-            ch1_notes.append((row, note, BASS_SAMPLE, 64))
+            rows_per_note = 8
 
-        pattern = create_pattern(ch1_notes, ch2_notes, ch3_notes, ch4_notes)
-        patterns.append(pattern)
+            for i, note in enumerate(melody):
+                row = i * rows_per_note
+                if note in NOTE_PERIODS:
+                    ch1_notes.append((row, note, BASS_SAMPLE, 64))
+
+            pattern = create_pattern(ch1_notes, ch2_notes, ch3_notes, ch4_notes)
+            patterns.append(pattern)
 
     # Create pattern order with clear structure:
     # A: Opening (patterns 0-7) - the good beginning
-    # B: Melodic hook (patterns 8-15) - memorable melody
+    # B1: C minor melodic hook (patterns 8-15)
+    # B2: D minor - shifted up 2 (patterns 16-23)
+    # B3: E minor - shifted up again (patterns 24-31)
+    # B4: A minor - surprise drop (patterns 32-39)
     #
-    # Structure: A -> B -> A -> B -> A -> B -> A -> B (repeat 8 times = 128 entries)
+    # Structure: A -> B1 -> A -> B2 -> A -> B3 -> A -> B4 -> A -> B1 (back to original)
 
     pattern_order = []
 
-    # 8 rounds of A-B to fill 128 entries
-    for _ in range(8):
-        pattern_order.extend(range(0, 8))      # A: opening
-        pattern_order.extend(range(8, 16))     # B: melodic hook
+    # Round 1: Opening + C minor
+    pattern_order.extend(range(0, 8))       # A: opening
+    pattern_order.extend(range(8, 16))      # B1: C minor
 
-    # 8 rounds × 16 patterns = 128 entries exactly
+    # Round 2: Opening + D minor (shifted up 2!)
+    pattern_order.extend(range(0, 8))       # A: opening (same)
+    pattern_order.extend(range(16, 24))     # B2: D minor - surprise shift!
+
+    # Round 3: Opening + E minor (shifted up again!)
+    pattern_order.extend(range(0, 8))       # A: opening (same)
+    pattern_order.extend(range(24, 32))     # B3: E minor - more tension!
+
+    # Round 4: Opening + A minor (surprise drop!)
+    pattern_order.extend(range(0, 8))       # A: opening (same)
+    pattern_order.extend(range(32, 40))     # B4: A minor - dramatic!
+
+    # Round 5: Back to original C minor (resolution)
+    pattern_order.extend(range(0, 8))       # A: opening (same)
+    pattern_order.extend(range(8, 16))      # B1: C minor - back home
+
+    # Round 6: One more D minor then back
+    pattern_order.extend(range(0, 8))       # A: opening
+    pattern_order.extend(range(16, 24))     # B2: D minor
+
+    # Round 7: Final return to C minor
+    pattern_order.extend(range(0, 8))       # A: opening
+    pattern_order.extend(range(8, 16))      # B1: C minor - home
+
+    # Round 8: End on opening only (wind down)
+    pattern_order.extend(range(0, 8))       # A: opening - final
+
+    # Total: 8 rounds × 16 = 128 entries
     if len(pattern_order) > 128:
         pattern_order = pattern_order[:128]
 
