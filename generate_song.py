@@ -156,7 +156,6 @@ def main():
 
     # Use smoother wave channel instruments (64 bytes, less clicky)
     BASS_SAMPLE = 13     # Sawtooth Wave - smooth and full
-    ACCOMP_SAMPLE = 15   # Sine Wave - very smooth for accompaniment
 
     # Alternating note pairs - each pair repeats 4 times (8 notes per pattern)
     # Format: (note1, note2) - these alternate, with note2 being ~5th above note1
@@ -169,33 +168,61 @@ def main():
         ('A-2', 'E-3'),   # A and E (perfect 5th)
         ('F-2', 'C-3'),   # F and C (perfect 5th)
 
-        # Section B: More pairs
+        # Section B: More pairs - building familiarity
         ('D-2', 'A-2'),   # D and A
         ('E-2', 'B-2'),   # E and B
         ('G-2', 'D-3'),   # G and D again
         ('C-2', 'G-2'),   # back to C and G
 
-        # Section C: Different register
-        ('C-3', 'G-3'),   # C and G higher
-        ('F-2', 'C-3'),   # F and C
-        ('G-2', 'D-3'),   # G and D
-        ('A-2', 'E-3'),   # A and E
+        # Section C: Rhymes with A but higher register - leaning in
+        ('C-3', 'G-3'),   # C and G higher (echo of section A)
+        ('G-3', 'D-4'),   # G and D higher
+        ('A-2', 'E-3'),   # A and E (familiar)
+        ('F-3', 'C-4'),   # F and C higher
+
+        # Section D: Going off the rails - unexpected intervals
+        ('C-2', 'F#2'),   # Tritone! (the devil's interval)
+        ('G-2', 'C#3'),   # Another tritone
+        ('D-2', 'G#2'),   # Tritone again
+        ('A-2', 'D#3'),   # Tritone - tension!
+
+        # Section E: Chromatic descent - sliding down
+        ('C-3', 'B-2'),   # Half step down
+        ('B-2', 'A#2'),   # Keep sliding
+        ('A#2', 'A-2'),   # More sliding
+        ('A-2', 'G#2'),   # Chromatic tension
+
+        # Section F: Resolution - back to familiar but with twist
+        ('G-2', 'D-3'),   # Familiar G-D
+        ('C-2', 'G-2'),   # Back home to C-G
+        ('F-2', 'C-3'),   # F-C comfort
+        ('C-2', 'E-2'),   # End on major 3rd - warm resolution
+
+        # Section G: Wild octave jumps
+        ('C-2', 'C-3'),   # Octave jump
+        ('G-2', 'G-3'),   # Octave jump
+        ('D-2', 'D-3'),   # Octave jump
+        ('A-2', 'A-3'),   # Octave jump
+
+        # Section H: Final return home
+        ('C-2', 'G-2'),   # Classic C-G
+        ('G-2', 'D-3'),   # G-D
+        ('C-2', 'G-2'),   # C-G again
+        ('C-2', 'G-2'),   # Hold on home
     ]
 
-    # Four note pairs (root + 5th on bass, with 3rd and octave accompaniment)
+    # Four note pairs - just root and fifth alternating
     four_note_sequences = [
-        # C major: C, E, G, C
-        ('C-2', 'G-2', 'E-2', 'C-3'),
-        # G major: G, B, D, G
-        ('G-2', 'D-3', 'B-2', 'G-3'),
-        # A minor: A, C, E, A
-        ('A-2', 'E-3', 'C-3', 'A-3'),
-        # F major: F, A, C, F
-        ('F-2', 'C-3', 'A-2', 'F-3'),
-        # D minor: D, F, A, D
-        ('D-2', 'A-2', 'F-2', 'D-3'),
-        # E minor: E, G, B, E
-        ('E-2', 'B-2', 'G-2', 'E-3'),
+        # Familiar progressions
+        ('C-2', 'G-2'),   # C major feel
+        ('G-2', 'D-3'),   # G major feel
+        ('A-2', 'E-3'),   # A minor feel
+        ('F-2', 'C-3'),   # F major feel
+        # Wilder ones
+        ('E-2', 'C-3'),   # Minor 6th - darker
+        ('D-2', 'B-2'),   # Major 6th
+        ('C-2', 'A-2'),   # Minor 6th down
+        ('G-2', 'E-3'),   # Major 6th up
     ]
 
     patterns = []
@@ -215,57 +242,48 @@ def main():
             row = i * rows_per_note
             note = note1 if i % 2 == 0 else note2
 
-            # Main bass note on channel 1
+            # Main bass note on channel 1 only - clean, no accompaniment
             ch1_notes.append((row, note, BASS_SAMPLE, 64))
 
-            # Quiet sustained accompaniment on channel 3 (the "other" note, very quiet)
-            other_note = note2 if i % 2 == 0 else note1
-            ch3_notes.append((row, other_note, ACCOMP_SAMPLE, 20))
-
-        speed = 3 if len(patterns) == 0 else None
+        speed = 2 if len(patterns) == 0 else None  # Faster tempo
         pattern = create_pattern(ch1_notes, ch2_notes, ch3_notes, ch4_notes, set_speed=speed)
         patterns.append(pattern)
 
-    # Generate four-note patterns (more complex section)
+    # Generate additional patterns with the four_note_sequences
     for seq in four_note_sequences:
         ch1_notes = []
         ch2_notes = []
         ch3_notes = []
         ch4_notes = []
 
-        root, fifth, third, octave = seq
+        note1, note2 = seq
         rows_per_note = 8
 
         for i in range(8):
             row = i * rows_per_note
-            # Alternate between root and fifth
-            if i % 2 == 0:
-                ch1_notes.append((row, root, BASS_SAMPLE, 64))
-                ch3_notes.append((row, third, ACCOMP_SAMPLE, 24))
-            else:
-                ch1_notes.append((row, fifth, BASS_SAMPLE, 64))
-                if octave in NOTE_PERIODS:
-                    ch3_notes.append((row, octave, ACCOMP_SAMPLE, 20))
+            note = note1 if i % 2 == 0 else note2
+            ch1_notes.append((row, note, BASS_SAMPLE, 64))
 
         pattern = create_pattern(ch1_notes, ch2_notes, ch3_notes, ch4_notes)
         patterns.append(pattern)
 
-    # Create pattern order - need ~120 patterns for 3 minutes at speed 3
-    # Each pattern is ~1.54 seconds at speed 3
-    # 3 minutes = 180 seconds / 1.54 = ~117 patterns needed
+    # Create pattern order - at speed 2, each pattern is ~1.02 seconds
+    # Max 128 entries = ~130 seconds = ~2.2 minutes at speed 2
     pattern_order = []
 
-    # Play through all patterns 6+ times to reach ~3 minutes
-    for _ in range(7):
-        pattern_order.extend(range(len(patterns)))
+    # Play through all patterns, then add extra from the beginning
+    pattern_order.extend(range(len(patterns)))
+    pattern_order.extend(range(len(patterns)))
+    pattern_order.extend(range(len(patterns)))
+    pattern_order.extend(range(len(patterns)))  # Fill to max
 
     # MOD format supports up to 128 entries in pattern order
     if len(pattern_order) > 128:
         pattern_order = pattern_order[:128]
 
-    # At speed 3 (ticks per row), 125 BPM: each row = 0.024 sec, 64 rows = 1.54 sec per pattern
+    # At speed 2 (ticks per row), 125 BPM: each row = 0.016 sec, 64 rows = 1.02 sec per pattern
     print(f"\nGenerated {len(patterns)} patterns, song order has {len(pattern_order)} entries")
-    print(f"Estimated duration: {len(pattern_order) * 1.54:.1f} seconds ({len(pattern_order) * 1.54 / 60:.1f} minutes)")
+    print(f"Estimated duration: {len(pattern_order) * 1.02:.1f} seconds ({len(pattern_order) * 1.02 / 60:.1f} minutes)")
 
     # Write the MOD file
     output_path = '/home/danielrh/dev/geometrydash/gamesong.mod'
