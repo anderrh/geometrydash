@@ -91,6 +91,7 @@ ClearOam:
       ld [wScrollCounter+1], a
       ld a,20
       ld [wMainX+1], a
+      ld a,80
       ld [wMainY+1], a
       
 
@@ -192,6 +193,7 @@ WaitVBlank2:
     ld a, h
     ld [wMainY + 1], a
     call PlayerMovement
+    call Transporters
     ld a, [wGameOver]
     or a, 0
     jp z, gamea

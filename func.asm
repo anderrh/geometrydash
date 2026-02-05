@@ -34,9 +34,10 @@ reset:
     ld [wScrollSpeed+1], a
     ld [wScrollCounter], a
     ld [wScrollCounter+1], a
+    ld a,80
+    ld [wMainY+1], a
     ld a,20
     ld [wMainX+1], a
-    ld [wMainY+1], a
 
     ld b ,0
     ld de, 0
@@ -123,7 +124,7 @@ Gravity:
   ld h,a
   
   
-  ld e,$30
+  ld e,$2e
   ld d,$00
 ;  bit 7, h ; if negative always do gravity
 ;  jp nz, .always_do_gravity
@@ -376,3 +377,86 @@ CopyColumn:
      pop bc
      pop de
     ret
+
+Transporters:
+
+    ld a, [wMainX+1]
+    ld b, a
+    ld a, [wMainY+1]
+    add a, 3
+    ld c,a
+    call GetTilesByAPixel
+    call CheckBouncers
+    jp nz, .noBounceUp
+    ld a, $fc
+    ld [wMainMomentumY+1], a
+    
+    .noBounceUp:
+
+    ret
+CheckBouncers:
+    ld a, b
+    cp a, $17
+    ret z
+    ld a, c
+    cp a, $17
+    ret
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+;This game was  made by a guy called Ander which witch wanted werid wonky whips ? did you know Baba and Mama are the best people in the world I like to play the piano with super style thrust bounce baby rock bro hey hat nah nose bro dis ti de b do. cu u no ih do ba doh crit.
