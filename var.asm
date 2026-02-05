@@ -17,3 +17,6 @@ wMainAngle:dw
 SECTION "Score", WRAM0
 wScore: db
 wGameOver:db
+
+SECTION "States", WRAM0
+wLevel:db

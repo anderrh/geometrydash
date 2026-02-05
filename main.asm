@@ -17,6 +17,8 @@ WaitVBlank:
     ; Turn the LCD off
     ld a, 0
     ld [rLCDC], a
+    ld a, 2 
+    ld [wLevel], a
 
     ; Copy the tile data
     ld de, Tiles
@@ -76,7 +78,7 @@ ClearOam:
     ; The ball starts out going up and to the right
       ld a, 1 ; 1 pixel per frame scrolling
       ld [wScrollSpeed], a
-      ld a, 0
+    
 
       ld a, 0
       ld [wGameOver], a
@@ -89,6 +91,9 @@ ClearOam:
       ld [wScrollSpeed+1], a
       ld [wScrollCounter], a
       ld [wScrollCounter+1], a
+      ld a, 1
+      ld [wScrollSpeed], a
+      
       ld a,20
       ld [wMainX+1], a
       ld a,80

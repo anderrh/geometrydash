@@ -1,5 +1,5 @@
 
-
+SECTION "leveldata",ROMX[$4000],BANK[2]
 Level:
 
   db ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, 
@@ -35,12 +35,12 @@ Level:
   db ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, uuu, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB,
   db ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, uuu, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, 
   db ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, uuu, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, 
-  db ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, BBB, uuu, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, 
+  db ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, 
   db ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, 
   db ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, $17, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, 
   db ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, 
-  db ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, 
-  db ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, 
+  db ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, AAA, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, 
+  db ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, uuu, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, 
   db ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, BBB, ooo, uuu, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, 
   db ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, uuu, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, 
   db ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, uuu, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, 

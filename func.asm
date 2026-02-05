@@ -302,6 +302,9 @@ CopyColumn:
     ld d, b
     ld e, c
     ld c, levelHeight  
+
+    ld a, [wLevel]
+    ld [rROMB0],a
     ; dest in [de]
     ; src in [hl]
     ; num to copy in c
@@ -317,6 +320,8 @@ CopyColumn:
         ld d, a
         dec c
         jp nz ,.StartCopying
+    ld a, 0
+    ld [rROMB0],a
     
 
     
