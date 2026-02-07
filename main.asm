@@ -141,9 +141,6 @@ WaitVBlank2:
     cp 144
     jp c, WaitVBlank2
 
-    call SetSongBank
-    call hUGE_dosound
-
     ld a, [wGameOver]
     cp a, ($ff - $20) 
     jp c,gameb
@@ -195,6 +192,9 @@ WaitVBlank2:
     
     call ScrollLevel
     
+
+    call SetSongBank
+    call hUGE_dosound
 
     ; Load wMainY into hl (destroying a)
     ld a, [wMainY]
@@ -250,7 +250,13 @@ WaitVBlank2:
     
     
 ; Then check the right button.
-
+    ld a, [wGameOver]
+    cp a, $fe
+    jp nz, .skipResetSong
+    call SetSongBank
+    ld hl , lvl1song
+    call hUGE_init
+    .skipResetSong
     jp Main
 
 

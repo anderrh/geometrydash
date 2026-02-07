@@ -48,6 +48,10 @@ reset:
     ld e, c
     ld l, c
     call CopyColumn
+    call SetSongBank
+    ld a, 0
+    ld c , 1
+    call hUGE_set_position
     ret
 IsFloorTile:
     cp a, $11
@@ -233,6 +237,7 @@ GameOver:
     ld a, 0
     ld [wScrollSpeed],a
     ld [wScrollSpeed+1],a
+    
     ret
 Turn:
     ld a, [wMainAngle]
