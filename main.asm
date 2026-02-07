@@ -22,7 +22,7 @@ WaitVBlank:
     ; Turn the LCD off
     ld a, 0
     ld [rLCDC], a
-    ld a, 2 
+    ld a, 1 
     ld [wLevel], a
 
     ; Copy the tile data
@@ -119,7 +119,7 @@ ClearOam:
     ld [rAUDVOL], a
 
     ; manage sound
-
+    
     ld hl , lvl1song
     call hUGE_init
 

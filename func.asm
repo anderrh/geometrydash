@@ -303,8 +303,8 @@ CopyColumn:
     ld e, c
     ld c, levelHeight  
 
-    ld a, [wLevel]
-    ld [rROMB0],a
+    
+    call SetLevelBank
     ; dest in [de]
     ; src in [hl]
     ; num to copy in c
@@ -320,8 +320,6 @@ CopyColumn:
         ld d, a
         dec c
         jp nz ,.StartCopying
-    ld a, 0
-    ld [rROMB0],a
     
 
     
@@ -406,7 +404,18 @@ CheckBouncers:
     ld a, c
     cp a, $17
     ret
+SetSongBank:
+    ld a , [wLevel]
+    add a, a
+    dec a
+    ld [rROMB0], a
+    ret
 
+SetLevelBank:
+    ld a , [wLevel]
+    add a, a
+    ld [rROMB0], a
+    ret
 
 
 
