@@ -228,7 +228,7 @@ WaitVBlank2:
     gamea:
     call CheckSpikeTile
     jp nz, nospike
-    call GameOver
+    ; call GameOver
     nospike:
     
 
