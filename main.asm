@@ -8,10 +8,6 @@ SECTION "header", ROM0[$100]
     ds $150 - @, 0 ; Make room for the header
 
 EntryPoint:
-    xor a
-    ldh [rIF], a
-    inc a
-    ldh [rIE], a
     ; Do not turn the LCD off outside of VBlank
 WaitVBlank:
     ld a, [rLY]
@@ -22,7 +18,7 @@ WaitVBlank:
     ; Turn the LCD off
     ld a, 0
     ld [rLCDC], a
-    ld a, 2 
+    ld a, 1 
     ld [wLevel], a
 
     ; Copy the tile data
@@ -119,7 +115,7 @@ ClearOam:
     ld [rAUDVOL], a
 
     ; manage sound
-
+    call SetSongBank
     ld hl , lvl1song
     call hUGE_init
 
@@ -145,6 +141,7 @@ WaitVBlank2:
     cp 144
     jp c, WaitVBlank2
 
+    call SetSongBank
     call hUGE_dosound
 
     ld a, [wGameOver]

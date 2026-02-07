@@ -1,6 +1,6 @@
 include "hUGE.inc"
 
-SECTION "lvl1song Song Data", ROMX
+SECTION "lvl1song Song Data", ROMX, BANK[1]
 
 lvl1song::
 db 5

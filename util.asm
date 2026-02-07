@@ -75,8 +75,8 @@ GetLevelTileAddressFromScroll:
     push af
     ;don't push hl(our work/:) 
     push bc
-    ld a, [wLevel]
-    ld [rROMB0],a
+    
+    call SetLevelBank
     ld e, b
     ld d, 0 ; load X (b) into de pix
     ld a, [wScrollCounter]
