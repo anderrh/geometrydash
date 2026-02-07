@@ -1,4 +1,4 @@
-INCLUDE "hardware.inc"
+INCLUDE "include/hardware.inc"
 
 
 SECTION "header", ROM0[$100]
@@ -104,6 +104,14 @@ ClearOam:
     ; Turn the LCD on
     ld a, LCDCF_ON | LCDCF_BGON | LCDCF_OBJON | LCDCF_OBJ16 ; danielrh added
     ld [rLCDC], a
+
+    ; turn on sound
+    ld a, $80
+    ld [rAUDENA], a
+    ld a, $ff
+    ld [rAUDTERM], a
+    ld a, $77
+    ld [rAUDVOL], a
 
     ; During the first (blank) frame, initialize display registers
     ld a, %11100100
@@ -273,7 +281,7 @@ INCLUDE "sprites.asm"
 
 INCLUDE "level.asm"
 
-
+INCLUDE "levelmusic.asm"
 
 
 INCLUDE "var.asm"
