@@ -8,11 +8,16 @@ SECTION "header", ROM0[$100]
     ds $150 - @, 0 ; Make room for the header
 
 EntryPoint:
+    xor a
+    ldh [rIF], a
+    inc a
+    ldh [rIE], a
     ; Do not turn the LCD off outside of VBlank
 WaitVBlank:
     ld a, [rLY]
     cp 144
     jp c, WaitVBlank
+    
 
     ; Turn the LCD off
     ld a, 0
@@ -113,6 +118,11 @@ ClearOam:
     ld a, $77
     ld [rAUDVOL], a
 
+    ; manage sound
+
+    ld hl , lvl1song
+    call hUGE_init
+
     ; During the first (blank) frame, initialize display registers
     ld a, %11100100
     ld [rBGP], a
@@ -134,6 +144,9 @@ WaitVBlank2:
     ld a, [rLY]
     cp 144
     jp c, WaitVBlank2
+
+    call hUGE_dosound
+
     ld a, [wGameOver]
     cp a, ($ff - $20) 
     jp c,gameb
