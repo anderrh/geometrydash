@@ -157,20 +157,41 @@ def uge_note_name(note):
     return f"{NOTE_NAMES[semitone]}{octave}"
 
 def noise_reg_to_uge_note(poly_reg):
-    """Convert CH4 polynomial counter register to a hUGE noise 'note'.
-    NR43 format: SSSS W DDD
-      S = shift clock freq, W = counter width, D = dividing ratio
-    hUGE maps noise notes differently -- we approximate by using the
-    shift value as a rough pitch indicator.
+    """Convert CH4 polynomial counter register (NR43) to a hUGE noise note.
+    
+    hUGEDriver maps noise notes to NR43 values using a descending table:
+    note 0 = $D7, note 1 = $D6, ..., note 59 = $00
+    Pattern: upper nibble goes D,C,B,A,9,8,7,6,5,4,3,2,1,0
+             lower nibble cycles 7,6,5,4 within each group
+    Last few notes: $03,$02,$01,$00
     """
-    shift = (poly_reg >> 4) & 0x0F
-    width = (poly_reg >> 3) & 0x01
-    divisor = poly_reg & 0x07
-    # Map shift 0-15 to notes roughly. Lower shift = higher freq = higher note.
-    # hUGE noise notes: 0 is highest pitch, going down.
-    # This is approximate -- noise isn't tonal.
-    note = min(shift * 4, 71)
-    return note
+    # Build the reverse lookup table
+    if not hasattr(noise_reg_to_uge_note, '_table'):
+        table = {}
+        note = 0
+        for high in range(0xD, -1, -1):
+            for low in [7, 6, 5, 4]:
+                val = (high << 4) | low
+                table[val] = note
+                note += 1
+        # Last entries: $03, $02, $01, $00
+        for val in [3, 2, 1, 0]:
+            table[val] = note
+            note += 1
+        noise_reg_to_uge_note._table = table
+    
+    if poly_reg in noise_reg_to_uge_note._table:
+        return noise_reg_to_uge_note._table[poly_reg]
+    
+    # If not an exact match, find closest
+    best_note = 0
+    best_diff = 999
+    for val, note in noise_reg_to_uge_note._table.items():
+        diff = abs(val - poly_reg)
+        if diff < best_diff:
+            best_diff = diff
+            best_note = note
+    return best_note
 
 
 # ============================================
@@ -317,9 +338,160 @@ def deduplicate_notes(channel_notes):
     return cleaned
 
 
+def filter_triggered_only(channel_notes):
+    """Keep only notes that have the trigger bit set (actual note-on events)."""
+    filtered = {1: {}, 2: {}, 3: {}, 4: {}}
+    
+    for ch in [1, 2, 3, 4]:
+        for frame in sorted(channel_notes[ch].keys()):
+            info = channel_notes[ch][frame]
+            if info['triggered']:
+                filtered[ch][frame] = info
+    
+    return filtered
+
+
+def filter_channels(channel_notes, channels):
+    """Keep only the specified channels."""
+    filtered = {1: {}, 2: {}, 3: {}, 4: {}}
+    for ch in channels:
+        if ch in channel_notes:
+            filtered[ch] = channel_notes[ch]
+    return filtered
+
+
 # ============================================
 # UGE file generation
 # ============================================
+
+def build_uge_patterns_arpeggio(channel_notes, source_channels=None):
+    """Build patterns at ticks_per_row=2, using arpeggio effects to simulate
+    per-frame note changes.
+    
+    Pairs consecutive frames: frame 2N and 2N+1 become one row.
+    If both have notes differing by ≤15 semitones, uses arpeggio 0x0 to
+    alternate between them within the row.
+    
+    source_channels: which original channels to include (default [1])
+                     since CH1=CH2=CH3 are usually identical in these dumps
+    """
+    if source_channels is None:
+        source_channels = [1]
+    
+    # Merge requested source channels (they're usually identical, just pick events)
+    merged = {}
+    for ch in source_channels:
+        for frame, info in channel_notes[ch].items():
+            if frame not in merged:
+                merged[frame] = info
+    
+    all_frames = set(merged.keys())
+    if not all_frames:
+        return {}, 0, 0
+    
+    max_frame = max(all_frames)
+    total_rows = (max_frame + 2) // 2  # 2 frames per row
+    num_patterns = (total_rows + 63) // 64
+    
+    print(f"Arpeggio mode: {max_frame+1} frames -> {total_rows} rows -> {num_patterns} patterns")
+    
+    # Build note data with arpeggio effects
+    # arpeggio effect = 0, params = xy where tick0=base, tick1=base+x, tick2=base+y
+    # with ticks_per_row=2: tick0=base, tick1=base+x
+    
+    patterns = {}
+    arp_used = 0
+    arp_capped = 0
+    
+    for pat_idx in range(num_patterns):
+        cells = []  # (row, note, instrument, effect_code, effect_params)
+        frame_start = pat_idx * 64 * 2  # each row = 2 frames
+        
+        for row in range(64):
+            f_even = frame_start + row * 2
+            f_odd = f_even + 1
+            
+            note_even = merged.get(f_even, {}).get('note', NO_NOTE)
+            note_odd = merged.get(f_odd, {}).get('note', NO_NOTE)
+            
+            if note_even != NO_NOTE and note_odd != NO_NOTE and note_even != note_odd:
+                # Two different notes — use arpeggio
+                diff = note_odd - note_even
+                if abs(diff) <= 15:
+                    # Use lower note as base, arpeggio up to higher
+                    if diff > 0:
+                        base = note_even
+                        arp_x = diff
+                    else:
+                        base = note_odd
+                        arp_x = -diff
+                    cells.append((row, base, 0, 0, (arp_x << 4)))
+                    arp_used += 1
+                else:
+                    # Too big for arpeggio, just use first note
+                    cells.append((row, note_even, 0, 0, 0))
+                    arp_capped += 1
+            elif note_even != NO_NOTE:
+                cells.append((row, note_even, 0, 0, 0))
+            elif note_odd != NO_NOTE:
+                cells.append((row, note_odd, 0, 0, 0))
+        
+        patterns[pat_idx] = cells
+    
+    print(f"  Arpeggio cells used: {arp_used}, capped (diff>15): {arp_capped}")
+    return patterns, num_patterns, total_rows
+
+
+def build_uge_patterns_dualchannel(channel_notes, source_channels=None):
+    """Build patterns at ticks_per_row=2, splitting even/odd frames across
+    two channels for the interleaved effect.
+    
+    Returns patterns for CH1 (even frames) and CH2 (odd frames).
+    """
+    if source_channels is None:
+        source_channels = [1]
+    
+    merged = {}
+    for ch in source_channels:
+        for frame, info in channel_notes[ch].items():
+            if frame not in merged:
+                merged[frame] = info
+    
+    all_frames = set(merged.keys())
+    if not all_frames:
+        return {}, {}, 0, 0
+    
+    max_frame = max(all_frames)
+    total_rows = (max_frame + 2) // 2
+    num_patterns = (total_rows + 63) // 64
+    
+    print(f"Dual-channel mode: {max_frame+1} frames -> {total_rows} rows -> {num_patterns} patterns")
+    
+    patterns_even = {}  # CH1: even frames
+    patterns_odd = {}   # CH2: odd frames
+    
+    for pat_idx in range(num_patterns):
+        cells_even = []
+        cells_odd = []
+        frame_start = pat_idx * 64 * 2
+        
+        for row in range(64):
+            f_even = frame_start + row * 2
+            f_odd = f_even + 1
+            
+            note_even = merged.get(f_even, {}).get('note', NO_NOTE)
+            note_odd = merged.get(f_odd, {}).get('note', NO_NOTE)
+            
+            if note_even != NO_NOTE:
+                cells_even.append((row, note_even, 0))
+            if note_odd != NO_NOTE:
+                cells_odd.append((row, note_odd, 0))
+        
+        patterns_even[pat_idx] = cells_even
+        patterns_odd[pat_idx] = cells_odd
+    
+    return patterns_even, patterns_odd, num_patterns, total_rows
+
 
 def build_uge_patterns(channel_notes, ticks_per_row=1):
     """Convert frame-based note events into UGE patterns.
@@ -371,6 +543,197 @@ def build_uge_patterns(channel_notes, ticks_per_row=1):
         patterns[pat_idx] = pat_data
     
     return patterns, num_patterns, total_rows
+
+
+def write_uge_file_arpeggio(channel_notes, output_path, song_name="Converted",
+                            source_channels=None):
+    """Write a .uge file using arpeggio to simulate fast note changes at t=2."""
+    
+    patterns, num_patterns, total_rows = build_uge_patterns_arpeggio(
+        channel_notes, source_channels)
+    
+    if num_patterns == 0:
+        print("No patterns to write!")
+        return
+    
+    if num_patterns > 255:
+        print(f"Warning: truncating to 255 patterns")
+        num_patterns = 255
+    
+    empty_key = num_patterns
+    total_keys = num_patterns + 1
+    
+    with open(output_path, 'wb') as f:
+        write_uge_int(f, UGE_FORMAT_VERSION)
+        write_uge_shortstring(f, song_name)
+        write_uge_shortstring(f, "")
+        write_uge_shortstring(f, "Converted with arpeggio simulation")
+        
+        # Instruments
+        write_uge_instrument(f, type_=0, name="Pulse", initial_volume=15, duty=2)
+        for _ in range(14):
+            write_uge_instrument(f, type_=0)
+        for _ in range(15):
+            write_uge_instrument(f, type_=1)
+        for _ in range(15):
+            write_uge_instrument(f, type_=2)
+        
+        # Waves
+        triangle = list(range(16)) + list(range(15, -1, -1))
+        f.write(bytes(triangle))
+        f.write(bytes([0]*16 + [15]*16))
+        for _ in range(14):
+            f.write(bytes(32))
+        
+        # Timing: t=2
+        write_uge_int(f, 2)
+        f.write(bytes([0]))
+        write_uge_int(f, 0)
+        
+        # Patterns
+        write_uge_int(f, total_keys)
+        
+        for pat_idx in range(num_patterns):
+            write_uge_int(f, pat_idx)
+            cells = {row: (note, inst, fx, fxp) 
+                     for row, note, inst, fx, fxp in patterns.get(pat_idx, [])}
+            for row in range(64):
+                if row in cells:
+                    note, inst, fx, fxp = cells[row]
+                    write_uge_cell(f, note=note, instrument=inst + 1,
+                                   effect_code=fx, effect_params=fxp)
+                else:
+                    write_uge_cell(f)
+        
+        # Empty pattern
+        write_uge_int(f, empty_key)
+        for _ in range(64):
+            write_uge_cell(f)
+        
+        # Order: CH1 = our patterns, CH2-4 = empty
+        order_len = num_patterns + 1
+        write_uge_int(f, order_len)
+        for i in range(num_patterns):
+            write_uge_int(f, i)
+        write_uge_int(f, 0)
+        
+        for _ in range(3):
+            write_uge_int(f, order_len)
+            for __ in range(num_patterns):
+                write_uge_int(f, empty_key)
+            write_uge_int(f, 0)
+        
+        for _ in range(16):
+            write_uge_int(f, 0)
+    
+    import os
+    print(f"Written: {output_path} ({os.path.getsize(output_path)} bytes)")
+
+
+def write_uge_file_dualchannel(channel_notes, output_path, song_name="Converted",
+                                source_channels=None):
+    """Write a .uge file splitting even/odd frames across CH1/CH2 at t=2."""
+    
+    patterns_even, patterns_odd, num_patterns, total_rows = \
+        build_uge_patterns_dualchannel(channel_notes, source_channels)
+    
+    if num_patterns == 0:
+        print("No patterns to write!")
+        return
+    
+    if num_patterns > 255:
+        print(f"Warning: truncating to 255 patterns")
+        num_patterns = 255
+    
+    # Pattern keys: 0..N-1 = CH1 (even), N..2N-1 = CH2 (odd), 2N = empty
+    empty_key = num_patterns * 2
+    total_keys = num_patterns * 2 + 1
+    
+    with open(output_path, 'wb') as f:
+        write_uge_int(f, UGE_FORMAT_VERSION)
+        write_uge_shortstring(f, song_name)
+        write_uge_shortstring(f, "")
+        write_uge_shortstring(f, "Converted with dual-channel interleave")
+        
+        # Instruments
+        write_uge_instrument(f, type_=0, name="Pulse A", initial_volume=15, duty=2)
+        write_uge_instrument(f, type_=0, name="Pulse B", initial_volume=15, duty=2)
+        for _ in range(13):
+            write_uge_instrument(f, type_=0)
+        for _ in range(15):
+            write_uge_instrument(f, type_=1)
+        for _ in range(15):
+            write_uge_instrument(f, type_=2)
+        
+        # Waves
+        triangle = list(range(16)) + list(range(15, -1, -1))
+        f.write(bytes(triangle))
+        f.write(bytes([0]*16 + [15]*16))
+        for _ in range(14):
+            f.write(bytes(32))
+        
+        # Timing: t=2
+        write_uge_int(f, 2)
+        f.write(bytes([0]))
+        write_uge_int(f, 0)
+        
+        # Patterns
+        write_uge_int(f, total_keys)
+        
+        # CH1 patterns (even frames)
+        for pat_idx in range(num_patterns):
+            write_uge_int(f, pat_idx)
+            cells = {row: (note, inst) for row, note, inst in patterns_even.get(pat_idx, [])}
+            for row in range(64):
+                if row in cells:
+                    note, inst = cells[row]
+                    write_uge_cell(f, note=note, instrument=1)
+                else:
+                    write_uge_cell(f)
+        
+        # CH2 patterns (odd frames)
+        for pat_idx in range(num_patterns):
+            write_uge_int(f, num_patterns + pat_idx)
+            cells = {row: (note, inst) for row, note, inst in patterns_odd.get(pat_idx, [])}
+            for row in range(64):
+                if row in cells:
+                    note, inst = cells[row]
+                    write_uge_cell(f, note=note, instrument=2)
+                else:
+                    write_uge_cell(f)
+        
+        # Empty pattern
+        write_uge_int(f, empty_key)
+        for _ in range(64):
+            write_uge_cell(f)
+        
+        # Order
+        order_len = num_patterns + 1
+        
+        # CH1: even frame patterns
+        write_uge_int(f, order_len)
+        for i in range(num_patterns):
+            write_uge_int(f, i)
+        write_uge_int(f, 0)
+        
+        # CH2: odd frame patterns
+        write_uge_int(f, order_len)
+        for i in range(num_patterns):
+            write_uge_int(f, num_patterns + i)
+        write_uge_int(f, 0)
+        
+        # CH3-4: empty
+        for _ in range(2):
+            write_uge_int(f, order_len)
+            for __ in range(num_patterns):
+                write_uge_int(f, empty_key)
+            write_uge_int(f, 0)
+        
+        for _ in range(16):
+            write_uge_int(f, 0)
+    
+    import os
+    print(f"Written: {output_path} ({os.path.getsize(output_path)} bytes)")
 
 
 def write_uge_file(channel_notes, output_path, song_name="Converted", ticks_per_row=1):
@@ -599,8 +962,14 @@ def print_summary(channel_notes, max_frames=20):
             count += 1
 
 
-def convert_dump(input_path, output_path, song_name=None, ticks_per_row=1):
-    """Main conversion pipeline."""
+def convert_dump(input_path, output_path, song_name=None, ticks_per_row=1,
+                 triggered_only=False, channels=None, mode='normal'):
+    """Main conversion pipeline.
+    
+    mode: 'normal' - standard conversion
+          'arpeggio' - t=2 with arpeggio effects to simulate t=1 speed
+          'dualchannel' - t=2 with even/odd frames split across CH1/CH2
+    """
     if song_name is None:
         song_name = input_path.rsplit('/', 1)[-1].rsplit('.', 1)[0]
     
@@ -617,11 +986,27 @@ def convert_dump(input_path, output_path, song_name=None, ticks_per_row=1):
     print("Deduplicating consecutive same-notes...")
     channel_notes = deduplicate_notes(channel_notes)
     
+    if triggered_only:
+        print("Filtering to triggered notes only...")
+        channel_notes = filter_triggered_only(channel_notes)
+    
+    if channels:
+        print(f"Filtering to channels: {channels}")
+        channel_notes = filter_channels(channel_notes, channels)
+    
     print_summary(channel_notes)
     
-    print(f"\nWriting .uge file: {output_path}")
-    write_uge_file(channel_notes, output_path, song_name=song_name,
-                   ticks_per_row=ticks_per_row)
+    print(f"\nWriting .uge file: {output_path} (mode={mode})")
+    
+    if mode == 'arpeggio':
+        write_uge_file_arpeggio(channel_notes, output_path, song_name=song_name,
+                                 source_channels=channels or [1])
+    elif mode == 'dualchannel':
+        write_uge_file_dualchannel(channel_notes, output_path, song_name=song_name,
+                                    source_channels=channels or [1])
+    else:
+        write_uge_file(channel_notes, output_path, song_name=song_name,
+                       ticks_per_row=ticks_per_row)
 
 
 if __name__ == '__main__':
@@ -632,10 +1017,23 @@ if __name__ == '__main__':
     parser.add_argument('-n', '--name', help='Song name', default=None)
     parser.add_argument('-t', '--ticks', type=int, default=1,
                         help='Ticks per row (default: 1, each frame = 1 row)')
+    parser.add_argument('--triggered-only', action='store_true',
+                        help='Only include notes with trigger bit set (new note-on events)')
+    parser.add_argument('-c', '--channels', type=str, default=None,
+                        help='Channels to include, comma-separated (e.g. "4" for noise only, "1,2" for pulse)')
+    parser.add_argument('-m', '--mode', choices=['normal', 'arpeggio', 'dualchannel'],
+                        default='normal',
+                        help='Conversion mode: normal (t=N), arpeggio (t=2 with arp effects), '
+                             'dualchannel (t=2 with even/odd frame split)')
     args = parser.parse_args()
     
     output = args.output
     if output is None:
         output = args.input.rsplit('.', 1)[0] + '.uge'
     
-    convert_dump(args.input, output, song_name=args.name, ticks_per_row=args.ticks)
+    channels = None
+    if args.channels:
+        channels = [int(c.strip()) for c in args.channels.split(',')]
+    
+    convert_dump(args.input, output, song_name=args.name, ticks_per_row=args.ticks,
+                 triggered_only=args.triggered_only, channels=channels, mode=args.mode)
