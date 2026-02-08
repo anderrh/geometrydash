@@ -604,6 +604,196 @@ def ghostly_dual_B():
 
 
 # ============================================
+# HAPPY INTERLUDE - C Major mirror of Section A
+# Same melodic contour, Eb→E, Ab→A, Bb→B
+# The listener thinks they've escaped the darkness...
+# ============================================
+
+# C major uses: C D E F G A B (E, A, B already defined at top)
+
+def lead_happy_A1():
+    """Main theme mirrored in C MAJOR. Same rhythm, bright feel."""
+    p = Pattern()
+    # Original: C5, Eb5, G5, Eb5, F5, G5, Ab5, G5, F5, Eb5...
+    # Major:    C5, E5,  G5, E5,  F5, G5, A5,  G5, F5, E5...
+    melody = [(0, C5), (6, E5), (8, G5), (12, E5),
+              (14, F5), (16, G5), (22, A5), (24, G5),
+              (28, F5), (30, E5),
+              (32, A5), (36, G5), (38, F5), (40, E5),
+              (44, D5), (46, C5), (48, E5), (52, D5),
+              (54, C5), (56, B4), (60, C5)]
+    for row, note in melody:
+        p.note(row, note, instrument=1)
+    return p
+
+def lead_happy_A2():
+    """Answering phrase in C major."""
+    p = Pattern()
+    # Original: G5, Ab5, Bb5, C6...
+    # Major:    G5, A5,  B5,  C6...
+    melody = [(0, G5), (4, A5), (6, B5), (8, C6),
+              (14, B5), (16, A5), (20, G5),
+              (24, F5), (28, E5), (30, F5),
+              (32, G5), (36, A5), (38, B5), (40, C6),
+              (44, B5), (46, A5), (48, G5),
+              (52, F5), (56, E5), (60, D5)]
+    for row, note in melody:
+        p.note(row, note, instrument=1)
+    return p
+
+def lead_happy_A3():
+    """Syncopated variation in C major — the happiest it gets."""
+    p = Pattern()
+    melody = [(0, C5), (2, E5), (4, G5), (8, C6),
+              (10, B5), (14, A5), (16, G5),
+              (18, A5), (20, G5), (22, F5),
+              (24, E5), (26, G5), (28, B5),
+              (32, A5), (34, G5), (38, F5),
+              (40, E5), (42, F5), (44, G5),
+              (48, C5), (50, D5), (52, E5),
+              (54, F5), (56, G5), (58, A5),
+              (60, B5), (62, C6)]
+    for row, note in melody:
+        p.note(row, note, instrument=1)
+    return p
+
+def lead_happy_darken():
+    """Starts major, chromatically darkens back to minor mid-pattern.
+    The moment of realization: the light was temporary."""
+    p = Pattern()
+    # Happy first half
+    melody = [(0, C6), (2, B5), (4, A5), (6, G5),
+              (8, F5), (10, E5), (12, D5), (14, C5),
+              (16, E5), (20, G5), (24, C6),
+              (28, B5), (30, A5)]
+    # Chromatic descent into minor — the turn
+    # A→Ab, E→Eb, B→Bb ... creeping darkness
+    darken = [(32, A5),  (34, Ab5),  # A natural → Ab
+              (36, G5),  (38, F5),
+              (40, E5),  (42, Eb5),  # E natural → Eb!
+              (44, D5),  (46, C5),
+              (48, Eb5), (50, F5),   # We're back in minor
+              (52, G5),  (54, Ab5),
+              (56, Bb4), (58, Ab4),  # Fully minor now
+              (60, G4),  (62, Eb4)]
+    for row, note in melody + darken:
+        p.note(row, note, instrument=1)
+    return p
+
+def harmony_happy_A1():
+    """Bright major harmony."""
+    p = Pattern()
+    melody = [(0, E4), (8, G4), (16, C5), (20, B4),
+              (24, A4), (28, G4),
+              (32, F4), (36, A4), (40, G4),
+              (48, E4), (52, F4), (56, G4)]
+    for row, note in melody:
+        p.note(row, note, instrument=2)
+    return p
+
+def harmony_happy_A2():
+    """Major answer harmony."""
+    p = Pattern()
+    melody = [(0, E5), (8, D5), (16, C5), (20, B4),
+              (24, A4), (28, B4),
+              (32, C5), (36, B4), (40, A4),
+              (48, G4), (52, A4), (56, B4)]
+    for row, note in melody:
+        p.note(row, note, instrument=2)
+    return p
+
+def harmony_happy_darken():
+    """Harmony that darkens with the lead."""
+    p = Pattern()
+    # Bright first half
+    p.note(0, E4, instrument=2)
+    p.note(8, G4, instrument=2)
+    p.note(16, A4, instrument=2)
+    p.note(24, G4, instrument=2)
+    # Darkening second half
+    p.note(32, Ab4, instrument=2)   # First shadow
+    p.note(40, Eb4, instrument=2)   # Fully minor
+    p.note(48, Ab4, instrument=2)
+    p.note(56, G4, instrument=2)
+    return p
+
+def bass_cmajor_drive():
+    """Bouncy C major bass — same rhythm as minor, brighter notes."""
+    p = Pattern()
+    bass = [(0, C3), (4, C4), (8, C3), (12, C4),
+            (16, C3), (20, C4), (24, C3), (28, C4),
+            (32, A3), (36, A3), (40, A3), (44, A3),   # Ab→A
+            (48, G3), (52, G3), (56, G3), (60, G3)]
+    for row, note in bass:
+        p.note(row, note, instrument=1)
+    return p
+
+def bass_cmajor_groove():
+    """Groovy major bass."""
+    p = Pattern()
+    bass = [(0, C3), (4, C3), (6, E3), (8, G3),       # Eb→E
+            (14, C3), (16, C3), (20, C3), (22, E3),
+            (24, F3), (30, C3),
+            (32, A3), (36, A3), (38, G3), (40, F3),    # Ab→A
+            (44, E3), (48, G3), (52, G3), (54, F3),    # Eb→E
+            (56, E3), (60, D3)]
+    for row, note in bass:
+        p.note(row, note, instrument=1)
+    return p
+
+def bass_darken():
+    """Bass that transitions from major to minor."""
+    p = Pattern()
+    # Major first half
+    bass = [(0, C3), (4, C4), (8, C3), (12, E3),
+            (16, G3), (20, A3), (24, G3), (28, E3),
+            # Darkening: chromatic descent
+            (32, A3), (36, Ab3),   # A→Ab
+            (40, G3), (44, F3),
+            (48, Eb3), (52, D3),   # Back in minor territory
+            (56, C3), (60, G3)]
+    for row, note in bass:
+        p.note(row, note, instrument=1)
+    return p
+
+def drums_bouncy():
+    """Lighter, bouncier drums for the happy section."""
+    p = Pattern()
+    # Open hi-hat feel
+    for row in range(0, 64, 4):
+        p.note(row, HIHAT_OPEN, instrument=1)
+    # Kick on 1 and the "and" of 2
+    for row in [0, 12, 32, 44]:
+        p.note(row, KICK, instrument=3)
+    # Snare on 2 and 4
+    for row in [8, 24, 40, 56]:
+        p.note(row, SNARE, instrument=2)
+    return p
+
+def drums_darken_fill():
+    """Drum fill that gets heavier, transitioning back to dark."""
+    p = Pattern()
+    # Bouncy first half
+    for row in range(0, 32, 4):
+        p.note(row, HIHAT_OPEN, instrument=1)
+    for row in [0, 12]:
+        p.note(row, KICK, instrument=3)
+    for row in [8, 24]:
+        p.note(row, SNARE, instrument=2)
+    # Increasingly heavy fill - toms descending, kicks doubling
+    fill = [(32, TOM_HI), (34, TOM_HI), (36, SNARE), (38, TOM_LO),
+            (40, TOM_LO), (42, SNARE), (44, KICK), (46, SNARE),
+            (48, KICK), (49, KICK), (50, SNARE), (51, SNARE),
+            (52, KICK), (53, KICK), (54, KICK), (55, SNARE),
+            (56, KICK), (57, KICK), (58, KICK), (59, KICK),
+            (60, KICK), (61, KICK), (62, KICK), (63, KICK)]
+    for row, note in fill:
+        inst = 2 if note == SNARE else 3
+        p.note(row, note, instrument=inst)
+    return p
+
+
+# ============================================
 # Song assembly
 # ============================================
 
@@ -611,19 +801,16 @@ def build_song():
     """
     Assemble all patterns and write the song.
     
-    Pattern layout per channel:
-    Each channel gets its own set of pattern keys.
-    
     Song sections:
     0:  Intro 1 - drums build
     1:  Intro 2 - bass enters
-    2:  Section A1 - main theme
+    2:  Section A1 - main theme (C minor)
     3:  Section A2 - answer
     4:  Section A3 - variation
     5:  Section A4 - variation 2 + fill
     6:  Ghost interlude 1a
     7:  Ghost interlude 1b (sweep)
-    8:  Section B1 - escalation
+    8:  Section B1 - escalation (Eb minor)
     9:  Section B2 - intense
     10: Section B + fill
     11: Ghost interlude 2a
@@ -633,9 +820,11 @@ def build_song():
     15: Breakdown
     16: Final drop (= climax reprise)
     17: Ghostly outro
+    18: Happy A1 (C major mirror)
+    19: Happy A2
+    20: Happy A3
+    21: Happy darken (major→minor transition)
     """
-    
-    NUM_SECTIONS = 18
     
     # CH1 (Lead)
     ch1_patterns = [
@@ -657,28 +846,36 @@ def build_song():
         lead_silent(),        # 15: breakdown
         lead_climax_1(),      # 16: final drop
         ghostly_arp_sweep(),  # 17: outro
+        lead_happy_A1(),      # 18: happy mirror
+        lead_happy_A2(),      # 19
+        lead_happy_A3(),      # 20
+        lead_happy_darken(),  # 21: the turn back to darkness
     ]
     
     # CH2 (Harmony)
     ch2_patterns = [
-        harmony_silent(),     # 0
-        harmony_silent(),     # 1
-        harmony_A1(),         # 2
-        harmony_A2(),         # 3
-        harmony_A1(),         # 4
-        harmony_A2(),         # 5
-        ghostly_arp_mid(),    # 6: ghost complement
-        ghostly_arp_high(),   # 7
-        harmony_B1(),         # 8
-        harmony_B1(),         # 9
-        harmony_A2(),         # 10
-        ghostly_arp_low(),    # 11
-        ghostly_dual_B(),     # 12: (odd frames)
-        harmony_climax(),     # 13
-        harmony_climax(),     # 14
-        harmony_breakdown(),  # 15
-        harmony_climax(),     # 16
-        ghostly_arp_low(),    # 17
+        harmony_silent(),       # 0
+        harmony_silent(),       # 1
+        harmony_A1(),           # 2
+        harmony_A2(),           # 3
+        harmony_A1(),           # 4
+        harmony_A2(),           # 5
+        ghostly_arp_mid(),      # 6: ghost complement
+        ghostly_arp_high(),     # 7
+        harmony_B1(),           # 8
+        harmony_B1(),           # 9
+        harmony_A2(),           # 10
+        ghostly_arp_low(),      # 11
+        ghostly_dual_B(),       # 12: (odd frames)
+        harmony_climax(),       # 13
+        harmony_climax(),       # 14
+        harmony_breakdown(),    # 15
+        harmony_climax(),       # 16
+        ghostly_arp_low(),      # 17
+        harmony_happy_A1(),     # 18: happy mirror
+        harmony_happy_A2(),     # 19
+        harmony_happy_A1(),     # 20
+        harmony_happy_darken(), # 21: the turn
     ]
     
     # CH3 (Bass - Wave)
@@ -701,6 +898,10 @@ def build_song():
         bass_breakdown(),       # 15
         bass_climax(),          # 16
         bass_ghost_hold(),      # 17
+        bass_cmajor_drive(),    # 18: happy mirror
+        bass_cmajor_groove(),   # 19
+        bass_cmajor_groove(),   # 20
+        bass_darken(),          # 21: the turn
     ]
     
     # CH4 (Drums - Noise)
@@ -723,31 +924,51 @@ def build_song():
         drums_halftime(),     # 15
         drums_climax(),       # 16
         drums_sparse_ghost(), # 17
+        drums_bouncy(),       # 18: happy mirror
+        drums_bouncy(),       # 19
+        drums_bouncy(),       # 20
+        drums_darken_fill(),  # 21: the turn
     ]
     
-    # Song order (pattern section indices, repeated for length)
-    # Full playthrough ~2 minutes at 224 BPM
+    # Song order: the emotional journey
+    # ~2.2 minutes at 224 BPM
     song_order = [
-        # Intro build (4 patterns)
-        0, 0, 1, 1,
-        # Section A - main theme first pass (4 patterns)
+        # === ACT 1: Establishment ===
+        # Intro build (3 patterns)
+        0, 0, 1,
+        # Section A - main theme, C minor (4 patterns)
         2, 3, 4, 5,
-        # Section A - repeat with familiarity (4 patterns)
+        # Section A - repeat for familiarity (4 patterns)
         2, 3, 4, 5,
+        
+        # === ACT 2: The Haunting ===
         # Ghostly interlude 1 (3 patterns)
         6, 7, 6,
-        # Section B - escalation (4 patterns)
+        # Section B - escalation, Eb minor (4 patterns)
         8, 9, 8, 10,
-        # Section B - repeat intensified (4 patterns)
-        8, 9, 9, 10,
-        # Ghostly interlude 2 (3 patterns)
-        11, 12, 11,
-        # Climax (6 patterns)
-        13, 14, 13, 14, 13, 14,
-        # Breakdown (3 patterns)
-        15, 15, 15,
-        # Section A return - nostalgic (4 patterns)
+        # Ghostly interlude 2 (2 patterns)
+        11, 12,
+        
+        # === ACT 3: False Hope ===
+        # Happy interlude! C MAJOR mirror (4 patterns)
+        # The listener thinks the ghosts are gone...
+        18, 19, 20, 19,
+        
+        # === ACT 4: The Turn ===
+        # Darken transition - major crumbles back to minor (1 pattern)
+        21,
+        # Section A SLAMS back - you thought you escaped? (4 patterns)
         2, 3, 4, 5,
+        
+        # === ACT 5: Climax ===
+        # Section B intensified (4 patterns)
+        8, 9, 9, 10,
+        # Full climax (4 patterns)
+        13, 14, 13, 14,
+        
+        # === ACT 6: Resolution ===
+        # Breakdown (2 patterns)
+        15, 15,
         # Final drop (4 patterns)
         16, 14, 16, 14,
         # Ghostly outro (3 patterns)
