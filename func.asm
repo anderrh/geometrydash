@@ -18,6 +18,48 @@ CheckFloorTile:
     ld a, e
     call IsFloorTile
     ret
+
+CheckPortalTile:
+
+    ld a, [wMainX+1]
+    ld b, a
+    ld a, [wMainY+1]
+    add a, 3
+    ld c,a
+    call GetTilesByAPixel
+    ld a, b
+    call GetPortalTile
+    ret z
+    ld a, c
+    call GetPortalTile
+    ret z
+    ld a, d
+    call GetPortalTile
+    ret z
+    ld a, e
+    call GetPortalTile
+    ret
+
+GetPortalTile:
+    cp a, $25
+    ret z
+    cp a, $29
+    ret z
+    ld a, 0
+    ret
+
+IsCubePortalTile:
+    cp a, $29
+    ret 
+
+IsSpacePortalTile:
+    cp a, $25
+    ret 
+
+
+
+
+
 reset:
     ld a, 1 ; 1 pixel per frame scrolling
     ld [wScrollSpeed], a
@@ -34,6 +76,10 @@ reset:
     ld [wScrollSpeed+1], a
     ld [wScrollCounter], a
     ld [wScrollCounter+1], a
+
+    ld a, cub
+    ld [wMainType],a
+
     ld a,80
     ld [wMainY+1], a
     ld a,20
@@ -114,22 +160,47 @@ CheckUp:
     or a, b
     ret z
 Up:
-    
+    ld a, [wMainType]
+    cp a,rok
+    jp z, .rocket
     ld a, $00
     ld [wMainMomentumY], a
     ld a, $fd
     ld [wMainMomentumY+1], a
     ret
+    .rocket:
+    ld a, [wMainMomentumY]
+    ld l,a
+    ld a, [wMainMomentumY+1]
+    ld h,a
+  
+  
+    ld e,$e0
+    ld d,$ff
+;  bit 7, h ; if negative always do gravity
+;  jp nz, .always_do_gravity
+;  ld a, h
+;  cp a, 4
+;  jp nc, .skip_terminal_velocity
+;  .always_do_gravity:
+    add hl, de
+;.skip_terminal_velocity:
+    ld a,l
+    ld [wMainMomentumY], a
+    ld a,h
+    ld [wMainMomentumY+1], a
+    ret
 
 Gravity:
+;arg e
+;arg d
   ld a, [wMainMomentumY]
   ld l,a
   ld a, [wMainMomentumY+1]
   ld h,a
   
   
-  ld e,$2e
-  ld d,$00
+  
 ;  bit 7, h ; if negative always do gravity
 ;  jp nz, .always_do_gravity
 ;  ld a, h
@@ -332,56 +403,6 @@ CopyColumn:
     
 
 
-
-
-; ; 0, 1, 2, 3, 4, 5, 6
-;     ld a, [wScrollCounterLow]
-;     and 3
-;     ret nz
-; ; 0, 4, 8, 12 
-;     ld a, [wScrollCounterLow]
-;     ld e,a
-;     ld a, [wScrollCounterLow+1]
-;     ld d,a
-;     srl d
-;     rr e
-;     srl d
-;     rr e ;shift de 2 times
-;     ld hl, (Level + 31) ;source
-;     add hl, de;<-------------J
-;     ld de, (_SCRN0+31) ;DEstanation
-;     ld a, [rSCX]
-;     srl a
-;     srl a
-;     srl a
-;     add a, e
-;     ld e, a
-;     ld a, 0
-;     adc a, d
-;     ld d, a
-    
-;     ld c, levelHeight       ;|
-;     .levelcopy:
-    
-;     ld a, [hl];_SCRN0 is tilemap5! width SCRN_X_B
-;     ld [de], a
-
-;     ld a,low(levelWidth)
-;     add a,l
-;     ld l,a
-;     ld a,high(levelWidth)
-;     adc a, h
-;     ld h, a
-
-;     ld a,$20
-;     add a,e
-;     ld e,a
-;     ld a,0
-;     adc a, d
-;     ld d, a
-
-;     dec c
-;     jp nz, .levelcopy
      pop hl
      pop af 
      pop bc

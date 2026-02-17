@@ -1,6 +1,5 @@
 INCLUDE "include/hardware.inc"
 
-
 SECTION "header", ROM0[$100]
 
     jp EntryPoint
@@ -46,7 +45,7 @@ WaitVBlank:
     ; Copy the paddle tile
     ld de, MainLeft
     ld hl, $8000
-    ld bc, MainRightEnd - MainLeft
+    ld bc, MainSpaceRightEnd - MainLeft
 		call Memcopy
 
     ld a, 0
@@ -77,8 +76,7 @@ ClearOam:
     ld [hli], a
 
     ; The ball starts out going up and to the right
-      ld a, 1 ; 1 pixel per frame scrolling
-      ld [wScrollSpeed], a
+      
     
 
       ld a, 0
@@ -92,9 +90,11 @@ ClearOam:
       ld [wScrollSpeed+1], a
       ld [wScrollCounter], a
       ld [wScrollCounter+1], a
-      ld a, 1
+      ld a, 1;1 pix per frame
       ld [wScrollSpeed], a
-      
+      ld a, cub
+      ld [wMainType],a
+
       ld a,20
       ld [wMainX+1], a
       ld a,80
@@ -153,12 +153,17 @@ WaitVBlank2:
     ld [_OAMRAM + 0],a
     ld [_OAMRAM + 4],a
     ld a, [wMainAngle]
+    
     srl a
     srl a
     srl a
     and a, 3
     add a, a
     add a, a
+    cubeend:
+
+    spaceend:
+
     ld [_OAMRAM + 2],a
     inc a
     inc a
@@ -169,7 +174,7 @@ WaitVBlank2:
     ld [_OAMRAM + 1],a
     add a, 8
     ld [_OAMRAM + 5],a
-    
+    ; after vblank time
     call UpdateKeys
 
     ld a, [wFrameCounter]
@@ -227,6 +232,14 @@ WaitVBlank2:
     jp nz, nospike
     call GameOver
     nospike:
+
+
+
+    call CheckPortalTile
+    jp nz, noPortal
+    ld [wMainType], a
+
+    noPortal:
     
 
 
@@ -262,8 +275,19 @@ WaitVBlank2:
 
 
 PlayerMovement:
-  call Turn
+  ld a,  [wMainType]
+  cp a, rok
+  jp z, SpaceMovement
+
+  jp nz, CubeMovement
+  ret
+  
+  CubeMovement:
+  ld e,$2e
+  ld d,$00
   call Gravity
+  call Turn
+  
   ; check if touching the ground
   call CheckFloorTile
   ; if not touching ground, go to .DoneTouchingGround
@@ -285,7 +309,16 @@ PlayerMovement:
   .BonkedCeiling:
     call GameOver
   ret
-  
+
+  SpaceMovement:
+  ld e,$10
+  ld d,$00
+  call Gravity
+  ;call SpaceTurn
+  call CheckUp
+  ret
+
+
 
 INCLUDE "func.asm"
 
