@@ -175,7 +175,7 @@ Up:
     ld h,a
   
   
-    ld e,$e0
+    ld e,$ff - 2* ROCKETTHRUST + $1
     ld d,$ff
 ;  bit 7, h ; if negative always do gravity
 ;  jp nz, .always_do_gravity

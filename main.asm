@@ -311,13 +311,66 @@ PlayerMovement:
   ret
 
   SpaceMovement:
-  ld e,$10
+  ld e,ROCKETTHRUST
   ld d,$00
   call Gravity
-  ;call SpaceTurn
+  call clamp
+  call SpaceTurn
+
+  call CheckFloorTile
+  jp nz ,.DoneTouchingGround
+    ; if Speed < 0 (bit 7 wMainMomentumY + 1) go to BonkedCeiling
+    ld a, 0
+    ld [wMainAngle], a
+    ld a ,[wMainMomentumY+1]
+    bit 7,a 
+    jp nz ,.BonkedCeiling;neg
+    ; Move Out Of Level with dy = -1 -> hl
+    ld h, $ff
+    ld l, $00
+    call MoveOutofLevel
+
+  .DoneTouchingGround:
   call CheckUp
   ret
+  .BonkedCeiling:
+  ld h, $01
+  ld l, $00
+  call MoveOutofLevel
+  call CheckUp
+  ret
+  
+  clamp:
+  ld a, [wMainMomentumY]
+  ld l, a
+  ld a, [wMainMomentumY+1]
+  ld h, a
+  bit 7,a
+  jp nz, upclamp
+  ld a, l
+  cp a, ROCKETUPCLAMP
+  jp c, clampdone
+  ld l, ROCKETUPCLAMP
 
+  jp clampdone
+  upclamp:
+
+  ld a, l
+  cp a, ROCKETDOWNCLAMP
+  jp nc, clampdone
+  ld l, ROCKETDOWNCLAMP
+
+  clampdone:
+
+
+  ld a, l
+  ld [wMainMomentumY],a
+  ld a, h
+  ld [wMainMomentumY+1], a
+  ret
+
+  SpaceTurn:
+  ret
 
 
 INCLUDE "func.asm"
