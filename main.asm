@@ -152,7 +152,10 @@ WaitVBlank2:
     add a, 16
     ld [_OAMRAM + 0],a
     ld [_OAMRAM + 4],a
+    ld a, [wMainType]
+    cp a, $29
     ld a, [wMainAngle]
+    jp nz, spacestart
     
     srl a
     srl a
@@ -160,9 +163,11 @@ WaitVBlank2:
     and a, 3
     add a, a
     add a, a
-    cubeend:
-
+    jp spaceend
+    spacestart:
+    ;spaceship specific math; none yet.
     spaceend:
+
 
     ld [_OAMRAM + 2],a
     inc a
@@ -370,7 +375,72 @@ PlayerMovement:
   ret
 
   SpaceTurn:
+  ld a, [wMainMomentumY]
+  cp a, $d0
+  jp nc, .cos3
+  cp a, $c0
+  jp nc, .cos2
+  cp a, $a0
+  jp nc, .cos1
+  cp a, $80
+  jp nc, .cos0
+  cp a, $60
+  jp nc, .cos6
+  cp a, $40
+  jp nc, .cos5
+  cp a, $30
+  jp nc, .cos4
+  .cos3:
+  ld a, $1c
+  ld [wMainAngle],a
   ret
+  .cos2:
+  ld a, $18
+  ld [wMainAngle],a
+  ret
+  .cos1:
+  ld a, $14
+  ld [wMainAngle],a
+  ret
+  .cos0:
+  ld a, $10
+  ld [wMainAngle],a
+  ret
+  .cos6:
+  ld a, $28
+  ld [wMainAngle],a
+  ret
+  .cos5:
+  ld a, $24
+  ld [wMainAngle],a
+  ret
+  .cos4:
+  ld a, $20
+  ld [wMainAngle], a
+  ret
+  
+    
+
+  ; smart way
+  cp a, $80
+  srl a
+  srl a
+  srl a
+  srl a
+  srl a
+  jp c ,.c
+  add a, 7
+  add a, a
+  add a, a
+  ld [wMainAngle],a
+  ret
+  .c:
+  add a, 4
+  add a, a
+  add a, a
+  ld [wMainAngle],a
+  ret
+
 
 
 INCLUDE "func.asm"
