@@ -377,9 +377,9 @@ PlayerMovement:
 
   SpaceTurn:
   ld a, [wMainMomentumY]
-  cp a, $d0
-  jp nc, .cos3
   cp a, $c0
+  jp nc, .cos3
+  cp a, $b0
   jp nc, .cos2
   cp a, $a0
   jp nc, .cos1
@@ -387,9 +387,9 @@ PlayerMovement:
   jp nc, .cos0
   cp a, $60
   jp nc, .cos6
-  cp a, $40
+  cp a, $50
   jp nc, .cos5
-  cp a, $30
+  cp a, $40
   jp nc, .cos4
   .cos3:
   ld a, $1c
@@ -404,11 +404,15 @@ PlayerMovement:
   ld [wMainCost],a
   ret
   .cos0:
-  ld a, $10
+  .cos6:
+  ld a, [wMainMomentumY+1]
+  or a, a
+  jp nz, .fixme0
+  ld a, $28
   ld [wMainCost],a
   ret
-  .cos6:
-  ld a, $28
+  .fixme0:
+  ld a, $10
   ld [wMainCost],a
   ret
   .cos5:
