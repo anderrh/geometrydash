@@ -331,7 +331,8 @@ PlayerMovement:
     bit 7,a 
     jp nz ,.BonkedCeiling;neg
     ; Move Out Of Level with dy = -1 -> hl
-    ld h, $fe
+
+    ld h, $ff
     ld l, $00
     call MoveOutofLevel
 
