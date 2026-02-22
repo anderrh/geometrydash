@@ -76,6 +76,7 @@ reset:
     ld [wScrollSpeed+1], a
     ld [wScrollCounter], a
     ld [wScrollCounter+1], a
+    ld [wMainCost],a
 
     ld a, cub
     ld [wMainType],a
@@ -224,6 +225,9 @@ MoveOutofLevel:
     push af
     push bc
     push hl
+    ld a,0
+        ld [wMainMomentumY], a
+        ld [wMainMomentumY+1], a
     ; add hl, hl;multiply by 2
     ; griffpatch only add hl, hl;multiply by 4
     call Neg16
@@ -269,9 +273,7 @@ MoveOutofLevel:
         ; if it's a floor tile then z flag is set
         jp z ,.Touching
         ; not Touching code here
-        ld a,0
-        ld [wMainMomentumY], a
-        ld [wMainMomentumY+1], a
+        
         jp .StopThisScript
         .Touching:
         dec bc
@@ -313,7 +315,14 @@ GameOver:
 Turn:
     ld a, [wMainAngle]
     inc a
-    ld [wMainAngle], a
+    ld [wMainAngle], a 
+    srl a
+    srl a
+    srl a
+    and a, 3
+    add a, a
+    add a, a
+    ld [wMainCost],a
     ret
 ScrollLevel:
 ; 00000111 | 10101000

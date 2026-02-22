@@ -13,6 +13,7 @@ wMainY: dw
 wMainMomentumY: dw
 wMainMomentumX: dw
 wMainAngle:dw
+wMainCost:dw
 wMainType:dw
 
 SECTION "Score", WRAM0

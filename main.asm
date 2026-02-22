@@ -90,11 +90,11 @@ ClearOam:
       ld [wScrollSpeed+1], a
       ld [wScrollCounter], a
       ld [wScrollCounter+1], a
+      ld [wMainCost],a
       ld a, 1;1 pix per frame
       ld [wScrollSpeed], a
       ld a, cub
       ld [wMainType],a
-
       ld a,20
       ld [wMainX+1], a
       ld a,80
@@ -152,21 +152,22 @@ WaitVBlank2:
     add a, 16
     ld [_OAMRAM + 0],a
     ld [_OAMRAM + 4],a
-    ld a, [wMainType]
-    cp a, $29
-    ld a, [wMainAngle]
-    jp nz, spacestart
+    ; ld a, [wMainType]
+    ; cp a, $29
+    ; jp nz, spacestart
+    ; ld a, [wMainAngle]
     
-    srl a
-    srl a
-    srl a
-    and a, 3
-    add a, a
-    add a, a
-    jp spaceend
-    spacestart:
-    ;spaceship specific math; none yet.
-    spaceend:
+    ; srl a
+    ; srl a
+    ; srl a
+    ; and a, 3
+    ; add a, a
+    ; add a, a
+    ; jp spaceend
+    ; spacestart:
+    ; ;spaceship specific math; none yet.
+    ; spaceend:
+    ld a,[wMainCost]
 
 
     ld [_OAMRAM + 2],a
@@ -325,13 +326,12 @@ PlayerMovement:
   call CheckFloorTile
   jp nz ,.DoneTouchingGround
     ; if Speed < 0 (bit 7 wMainMomentumY + 1) go to BonkedCeiling
-    ld a, 0
-    ld [wMainAngle], a
+    
     ld a ,[wMainMomentumY+1]
     bit 7,a 
     jp nz ,.BonkedCeiling;neg
     ; Move Out Of Level with dy = -1 -> hl
-    ld h, $ff
+    ld h, $fe
     ld l, $00
     call MoveOutofLevel
 
@@ -339,7 +339,7 @@ PlayerMovement:
   call CheckUp
   ret
   .BonkedCeiling:
-  ld h, $01
+  ld h, $02
   ld l, $00
   call MoveOutofLevel
   call CheckUp
@@ -392,31 +392,31 @@ PlayerMovement:
   jp nc, .cos4
   .cos3:
   ld a, $1c
-  ld [wMainAngle],a
+  ld [wMainCost],a
   ret
   .cos2:
   ld a, $18
-  ld [wMainAngle],a
+  ld [wMainCost],a
   ret
   .cos1:
   ld a, $14
-  ld [wMainAngle],a
+  ld [wMainCost],a
   ret
   .cos0:
   ld a, $10
-  ld [wMainAngle],a
+  ld [wMainCost],a
   ret
   .cos6:
   ld a, $28
-  ld [wMainAngle],a
+  ld [wMainCost],a
   ret
   .cos5:
   ld a, $24
-  ld [wMainAngle],a
+  ld [wMainCost],a
   ret
   .cos4:
   ld a, $20
-  ld [wMainAngle], a
+  ld [wMainCost],a
   ret
   
     
