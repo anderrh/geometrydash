@@ -225,9 +225,6 @@ MoveOutofLevel:
     push af
     push bc
     push hl
-    ld a,0
-        ld [wMainMomentumY], a
-        ld [wMainMomentumY+1], a
     ; add hl, hl;multiply by 2
     ; griffpatch only add hl, hl;multiply by 4
     call Neg16
@@ -253,6 +250,9 @@ MoveOutofLevel:
     add hl, de
     ld b,h
     ld c,l
+    ld a,0
+    ld [wMainMomentumY], a
+    ld [wMainMomentumY+1], a
     ; now lets begin the loop
     .repeat_abs_speedY_8:
         pop hl
