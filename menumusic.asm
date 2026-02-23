@@ -1,8 +1,8 @@
 include "hUGE.inc"
 
-SECTION "lvl1song Song Data", ROMX, BANK[3]
+SECTION "menusong Song Data", ROMX, BANK[1]
 
-lvl1song::
+menusong::
 db 3
 dw order_cnt
 dw order1, order2, order3, order4

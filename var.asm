@@ -24,5 +24,5 @@ wGameOver:db
 SECTION "States", WRAM0
 wLevel:db
 wGameState:db
-wMenuSelector:db
+wLevelSelector:db
 

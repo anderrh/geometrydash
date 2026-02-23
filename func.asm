@@ -444,12 +444,13 @@ CheckBouncers:
 SetSongBank:
     ld a , [wLevel]
     add a, a
-    dec a
+    inc a
     ld [rROMB0], a
     ret
 
 SetLevelBank:
     ld a , [wLevel]
+    inc a
     add a, a
     ld [rROMB0], a
     ret

@@ -1,6 +1,6 @@
 
-SECTION "leveldata",ROMX[$4000],BANK[4]
-Level:
+SECTION "menuleveldata",ROMX[$4000],BANK[2]
+MenuLevel:
 
   db ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, 
   db ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, 
@@ -514,8 +514,8 @@ Level:
   db ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, 
   db ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, $23, $25, $27, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, 
   db ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, ooo, $24, $26, $28, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, BBB, 
-  LevelEnd:
+  MenuLevelEnd:
 
 
-DEF levelHeight EQU $12
-DEF levelWidth EQU ((LevelEnd-Level)/levelHeight)
+;DEF levelHeight EQU $12
+; FIXME MAKE IT RIGHT DEF levelWidth EQU ((LevelEnd-Level)/levelHeight)
