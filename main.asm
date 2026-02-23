@@ -7,6 +7,28 @@ SECTION "header", ROM0[$100]
     ds $150 - @, 0 ; Make room for the header
 
 EntryPoint:
+
+StartMenu:
+     ; setup the menu tilemaps
+Menu:
+     ld a, [rLY]
+     cp 144
+     jp nc, Menu
+ WaitVBlank3:
+     ld a, [rLY]
+     cp 144
+     jp c, WaitVBlank3
+
+    call UpdateKeys
+
+    ld a, [wCurKeys]
+    and a, PADF_START
+    call nz, PlayGame
+
+    jp Menu
+    
+
+PlayGame:
     ; Do not turn the LCD off outside of VBlank
 WaitVBlank:
     ld a, [rLY]
@@ -132,6 +154,7 @@ ClearOam:
     ld [wNewKeys], a
     ld [wScore], a
 
+
 Main:
     ld a, [rLY]
     cp 144
@@ -182,6 +205,12 @@ WaitVBlank2:
     ld [_OAMRAM + 5],a
     ; after vblank time
     call UpdateKeys
+
+    ld a, [wCurKeys]
+    and a, PADF_SELECT
+    ret nz
+
+
 
     ld a, [wFrameCounter]
     inc a
