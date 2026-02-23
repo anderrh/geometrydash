@@ -377,7 +377,7 @@ PlayerMovement:
 
   SpaceTurn:
   ld a, [wMainMomentumY]
-  cp a, $c0
+  cp a, $d0
   jp nc, .cos3
   cp a, $b0
   jp nc, .cos2
@@ -389,7 +389,7 @@ PlayerMovement:
   jp nc, .cos6
   cp a, $50
   jp nc, .cos5
-  cp a, $40
+  cp a, $30
   jp nc, .cos4
   .cos3:
   ld a, $1c
