@@ -10,6 +10,9 @@ EntryPoint:
 
 StartMenu:
      ; setup the menu tilemaps
+
+call WaitVBlank4
+
 Menu:
      ld a, [rLY]
      cp 144
@@ -29,6 +32,132 @@ Menu:
     
 
 PlayGame:
+  call WaitVBlank
+  WaitVBlank4:
+  ld a, [rLY]
+  cp 144
+  jp c, WaitVBlank4
+
+  ;;;setup menu
+    ld a, 0
+    ld [rLCDC], a
+    ld a, 0
+    ld [wLevel], a
+
+    call SetLevelBank
+    ; Copy the tile data
+    ld de, MenuTiles
+    ld hl, $9000
+    ld bc, MenuTilesEnd - MenuTiles
+		call Memcopy
+
+    ; Copy the tilemap
+    ;ld de, Tilemap
+    ;ld hl, $9800
+    ;ld bc, TilemapEnd - Tilemap
+		;call Memcopy
+    ld b ,0
+    ld de, 0
+    ld hl, 0
+    ld c ,$20
+    startuptilecopy2:
+    dec c
+    ld e, c
+    ld l, c
+    call CopyColumn
+    jp nz, startuptilecopy2
+
+    ; Copy the paddle tile
+    ld de, MenuNumberSprites
+    ld hl, $8000
+    ld bc, MenuNumberSpritesEnd - MenuNumberSprites
+		call Memcopy
+
+    ld a, 0
+    ld b, 160
+    ld hl, _OAMRAM
+ClearOam2:
+    ld [hli], a
+    dec b
+    jp nz, ClearOam2
+
+		; Initialize the main left sprite in OAM
+    ld hl, _OAMRAM
+    ld a, 0 + 16
+    ld [hli], a
+    ld a, 0 + 8
+    ld [hli], a
+    ld a, 0
+    ld [hli], a
+    ld [hli], a
+    ; Now initialize the main right sprite
+    ld a, 16 + 16
+    ld [hli], a
+    ld a, 0 + 8
+    ld [hli], a
+    ld a, 2
+    ld [hli], a
+    ld a, 0
+    ld [hli], a
+
+    ; The ball starts out going up and to the right
+      
+    
+
+      ld a, 0
+      ld [wGameOver], a
+      ld [wMainMomentumX], a
+      ld [wMainMomentumY], a
+      ld [wMainMomentumX+1], a
+      ld [wMainMomentumY+1], a
+      ld [wMainX], a
+      ld [wMainY], a
+      ld [wScrollSpeed+1], a
+      ld [wScrollCounter], a
+      ld [wScrollCounter+1], a
+      ld [wMainCost],a
+      ld a, 1;1 pix per frame
+      ld [wScrollSpeed], a
+      ld a, cub
+      ld [wMainType],a
+      ld a,20
+      ld [wMainX+1], a
+      ld a,80
+      ld [wMainY+1], a
+      
+
+
+    ; Turn the LCD on
+    ld a, LCDCF_ON | LCDCF_BGON | LCDCF_OBJON | LCDCF_OBJ16 ; danielrh added
+    ld [rLCDC], a
+
+    ; turn on sound
+    ld a, $80
+    ld [rAUDENA], a
+    ld a, $ff
+    ld [rAUDTERM], a
+    ld a, $77
+    ld [rAUDVOL], a
+
+    ; manage sound
+    call SetSongBank
+    ld hl , lvl1song
+    call hUGE_init
+
+    ; During the first (blank) frame, initialize display registers
+    ld a, %11100100
+    ld [rBGP], a
+    ld a, %11100100
+    ld [rOBP0], a
+
+    ; Initialize global variables
+    ld a, 0
+    ld [wFrameCounter], a
+    ld [wCurKeys], a
+    ld [wNewKeys], a
+    ld [wScore], a
+
+  ret
     ; Do not turn the LCD off outside of VBlank
 WaitVBlank:
     ld a, [rLY]

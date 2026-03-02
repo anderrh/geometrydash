@@ -1,4 +1,4 @@
-main.gb: main.asm $(wildcard include/*) func.asm util.asm tiles.asm var.asm level.asm  sprites.asm
+main.gb: main.asm $(wildcard include/*) $(wildcard *.asm)
 	rgbasm -I include -o main.o main.asm
 	rgbasm -o hUGEDriver.o hUGEDriver.asm
 	rgblink -o main.gb main.o hUGEDriver.o
