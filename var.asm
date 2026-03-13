@@ -6,6 +6,7 @@ wScrollSpeed: dw
 SECTION "Input Variables", WRAM0
 wCurKeys: db
 wNewKeys: db
+wLastKeyDown: db
 
 SECTION "Main Data", WRAM0
 wMainX: dw

@@ -24,16 +24,65 @@ Menu:
 
     call UpdateKeys
 
+
     ld a, [wCurKeys]
     and a, PADF_START
     call nz, PlayGame
+    
+    ld a, [wCurKeys]
+    and a, PADF_UP
+    jp z, gamec
+    ld a, 2
+    ld [wLastKeyDown] ,a
+    jp somekeydown
+    gamec:
+    ld a, [wCurKeys]
+    and a, PADF_DOWN
+    jp z, gamed
+    ld a, 1
+    ld [wLastKeyDown] ,a
+    jp somekeydown
+    gamed:
 
+    ld a,[wLastKeyDown]
+    cp a, 0
+    jp z, somekeydown
+    add a, a
+    sub a, 3
+    ld b,a
+    
+    ld a, [wLevelSelector]
+    add a,b
+    cp a, 1 ; make sure level is a natural number
+    jp nc, positive_level
+    ld a, 1; if it is a negative level, keep it positive
+    positive_level:
+    ld [wLevelSelector], a
+
+    add a, a
+    add a, a
+    add a, a
+    ld b, a
+    ld a, 88
+    sub a, b
+    ld b,a
+    ld hl, _OAMRAM
+    ld [hl], a
+
+    ld a,0
+    ld [wLastKeyDown],a
+
+
+    somekeydown:
     jp Menu
     
 
 PlayGame:
+  ld a,[wLevelSelector]
+  ld [wLevel],a
   call WaitVBlank
   WaitVBlank4:
+  ;finished playing game
   ld a, [rLY]
   cp 144
   jp c, WaitVBlank4
@@ -41,8 +90,8 @@ PlayGame:
   ;;;setup menu
     ld a, 0
     ld [rLCDC], a
-    ld a, 0
     ld [wLevel], a
+    ld [rSCX],a
 
     call SetLevelBank
     ; Copy the tile data
@@ -81,25 +130,43 @@ ClearOam2:
     dec b
     jp nz, ClearOam2
 
-		; Initialize the main left sprite in OAM
+		; Initialize the main top
     ld hl, _OAMRAM
-    ld a, 0 + 16
+    ld a, 64 + 16
     ld [hli], a
-    ld a, 0 + 8
+    ld a, 96 + 8
     ld [hli], a
     ld a, 0
     ld [hli], a
+    ld a, 0
     ld [hli], a
-    ; Now initialize the main right sprite
-    ld a, 16 + 16
+    ; Now initialize the main bottom
+    ld a, 80 + 16
     ld [hli], a
-    ld a, 0 + 8
+    ld a, 96 + 8
     ld [hli], a
     ld a, 2
     ld [hli], a
     ld a, 0
     ld [hli], a
 
+    ld a, 96 + 16
+    ld [hli], a
+    ld a, 96 + 8
+    ld [hli], a
+    ld a, 4
+    ld [hli], a
+    ld a, 0
+    ld [hli], a
+    ; Now initialize the main bottom
+    ld a, 112 + 16
+    ld [hli], a
+    ld a, 96 + 8
+    ld [hli], a
+    ld a, 6
+    ld [hli], a
+    ld a, 0
+    ld [hli], a
     ; The ball starts out going up and to the right
       
     
@@ -156,6 +223,9 @@ ClearOam2:
     ld [wCurKeys], a
     ld [wNewKeys], a
     ld [wScore], a
+    ld [wLastKeyDown], a
+    ld a,1
+    ld [wLevelSelector],a
 
   ret
     ; Do not turn the LCD off outside of VBlank
