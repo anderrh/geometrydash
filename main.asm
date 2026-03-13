@@ -66,8 +66,14 @@ Menu:
     ld a, 88
     sub a, b
     ld b,a
-    ld hl, _OAMRAM
-    ld [hl], a
+    ld [_OAMRAM], a
+    add a,16
+    ld [_OAMRAM+4], a
+    add a,16
+    ld [_OAMRAM+8], a
+    add a,16
+    ld [_OAMRAM+12], a
+
 
     ld a,0
     ld [wLastKeyDown],a
