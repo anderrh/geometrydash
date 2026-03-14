@@ -310,6 +310,8 @@ GameOver:
     ld a, 0
     ld [wScrollSpeed],a
     ld [wScrollSpeed+1],a
+    ld [wMainMomentumY],a
+    ld [wMainMomentumY+1],a
     
     ret
 Turn:

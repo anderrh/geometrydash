@@ -536,8 +536,11 @@ PlayerMovement:
 
   jp nz, CubeMovement
   ret
-  
+
   CubeMovement:
+  ld a,[wGameOver]
+  cp a,0
+  jp nz, .DoneTouchingGround
   ld e,$2e
   ld d,$00
   call Gravity
@@ -571,7 +574,7 @@ PlayerMovement:
   call Gravity
   call clamp
   call SpaceTurn
-
+  
   call CheckFloorTile
   jp nz ,.DoneTouchingGround
     ; if Speed < 0 (bit 7 wMainMomentumY + 1) go to BonkedCeiling
