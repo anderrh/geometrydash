@@ -244,8 +244,6 @@ WaitVBlank:
     ; Turn the LCD off
     ld a, 0
     ld [rLCDC], a
-    ld a, 1
-    ld [wLevel], a
 
     ; Copy the tile data
     ld de, Tiles
@@ -693,6 +691,10 @@ INCLUDE "sprites.asm"
 INCLUDE "level.asm"
 
 INCLUDE "levelmusic.asm"
+
+INCLUDE "level2.asm"
+
+;INCLUDE "level2music.asm"
 
 INCLUDE "menulevel.asm"
 ;INCLUDE "menumusic.asm"
