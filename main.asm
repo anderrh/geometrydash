@@ -16,6 +16,13 @@ call WaitVBlank4
     ; initialize menu music
     ld a, 0
     ld [wLevel], a
+
+    ; Stop level sounds.
+    ldh [rAUD1ENV], a
+    ldh [rAUD2ENV], a
+    ldh [rAUD4ENV], a
+    ldh [rAUD3ENA], a
+
     call SetSongBank
     ld hl, menusong
     call hUGE_init
