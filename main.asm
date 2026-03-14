@@ -13,6 +13,13 @@ StartMenu:
 
 call WaitVBlank4
 
+    ; initialize menu music
+    ld a, 0
+    ld [wLevel], a
+    call SetSongBank
+    ld hl, menusong
+    call hUGE_init
+
 Menu:
      ld a, [rLY]
      cp 144
@@ -21,6 +28,9 @@ Menu:
      ld a, [rLY]
      cp 144
      jp c, WaitVBlank3
+
+    call SetSongBank
+    call hUGE_dosound
 
     call UpdateKeys
 
