@@ -139,6 +139,8 @@ CheckSpikeTile:
     ret
 
 IsSpikeTile:
+    cp a, $fe
+    ret ; FIXME REVERT    
     cp a, $12
     ret z
     cp a, $13
@@ -428,8 +430,10 @@ Transporters:
     call GetTilesByAPixel
     call CheckBouncers
     jp nz, .noBounceUp
-    ld a, $fc
+    ld a, $fb
     ld [wMainMomentumY+1], a
+    ld a, $00
+    ld [wMainMomentumY], a
     
     .noBounceUp:
 
