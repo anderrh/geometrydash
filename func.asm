@@ -139,8 +139,6 @@ CheckSpikeTile:
     ret
 
 IsSpikeTile:
-    cp a, $fe
-    ret ; FIXME REVERT    
     cp a, $12
     ret z
     cp a, $13
