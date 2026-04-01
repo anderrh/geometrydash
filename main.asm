@@ -713,6 +713,7 @@ INCLUDE "level.asm"
 INCLUDE "levelmusic.asm"
 
 INCLUDE "level2.asm"
+INCLUDE "level3.asm"
 
 ;INCLUDE "level2music.asm"
 
