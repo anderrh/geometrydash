@@ -27,4 +27,4 @@ wLevel:db
 wGameState:db
 wLevelSelector:db
 wNoSpike:db
-
+wScary:db

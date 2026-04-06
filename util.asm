@@ -12,7 +12,8 @@ DEF AAA EQU $12
 DEF vvv EQU $13
 DEF iii EQU $14
 DEF TTT EQU $21 ; top half block
-DEF gho EQU $22
+DEF gho EQU $22 ; ghost
+DEF gos EQU $2a ; ghost spike
 DEF III EQU $15
 DEF uuu EQU $16
 DEF cub EQU $29

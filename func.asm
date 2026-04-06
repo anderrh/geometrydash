@@ -79,7 +79,8 @@ reset:
     ld [wScrollCounter], a
     ld [wScrollCounter+1], a
     ld [wMainCost],a
-
+    ld [wScary],a
+        
     ld a, cub
     ld [wMainType],a
 
@@ -150,6 +151,31 @@ IsSpikeTile:
     cp a, $15
     ret z
     cp a, $16
+    ret 
+
+CheckGhostTile:
+
+    ld a, [wMainX+1]
+    add a, 8
+    ld b, a
+    ld a, [wMainY+1]
+    add a, 7
+    ld c,a
+    call GetTileByPixel
+    ld a, [hl]
+    call IsGhostTile
+    ret nz
+    ; we are a ghost tile. 
+    ld a, [wScary]
+    add a, 1
+    sbc a, 0 ; subtract 0 with carry. If this wrapped, will push it back to $ff
+    ld [wScary], a
+    ret
+
+IsGhostTile:
+    cp a, gho
+    ret z
+    cp a, gos
     ret 
 
 

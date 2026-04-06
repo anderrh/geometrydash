@@ -211,6 +211,7 @@ ClearOam2:
       ld [wScrollCounter], a
       ld [wScrollCounter+1], a
       ld [wMainCost],a
+      ld [wScary],a
       ld a, 1;1 pix per frame
       ld [wScrollSpeed], a
       ld a, cub
@@ -488,6 +489,7 @@ WaitVBlank2:
     inc a
     ld [wGameOver], a
     gamea:
+    call CheckGhostTile
     call CheckSpikeTile
     jp nz, nospike
     ld a, [wNoSpike]
@@ -722,6 +724,7 @@ INCLUDE "levelmusic.asm"
 
 INCLUDE "level2.asm"
 INCLUDE "level3.asm"
+INCLUDE "level4.asm"
 
 ;INCLUDE "level2music.asm"
 
