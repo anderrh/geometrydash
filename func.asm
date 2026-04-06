@@ -164,8 +164,19 @@ CheckGhostTile:
     call GetTileByPixel
     ld a, [hl]
     call IsGhostTile
+    jr z, .foundghost
+    ; check below player for ghost blocks
+    ld a, [wMainX+1]
+    add a, 6
+    ld b, a
+    ld a, [wMainY+1]
+    add a, 12
+    ld c,a
+    call GetTileByPixel
+    ld a, [hl]
+    call IsGhostTile
     ret nz
-    ; we are a ghost tile. 
+.foundghost:
     ld a, [wScary]
     add a, 1
     sbc a, 0 ; subtract 0 with carry. If this wrapped, will push it back to $ff
