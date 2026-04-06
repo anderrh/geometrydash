@@ -11,11 +11,12 @@ DEF BBB EQU $11
 DEF AAA EQU $12
 DEF vvv EQU $13
 DEF iii EQU $14
+DEF TTT EQU $21 ; top half block
+DEF gho EQU $22
 DEF III EQU $15
 DEF uuu EQU $16
 DEF cub EQU $29
 DEF rok EQU $25
-
 
 
 ; Copy bytes from one area to another.

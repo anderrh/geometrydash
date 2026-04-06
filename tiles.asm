@@ -307,15 +307,16 @@ Tiles:
 	dw `00000000
 	dw `00000000
 
-
-	dw `00000000
-	dw `00000000
-	dw `00000000
-	dw `00000000
-  dw `33333333
-	dw `31322313
-	dw `31322313
-	dw `33333333
+; corrupted ghost tile here
+	dw `20333020
+	dw `03100130
+	dw `30300303
+	dw `30200003
+	dw `03010130
+	dw `20332320
+	dw `03020300
+	dw `30200030
+; end ghost tile
 
 	dw `00000033
 	dw `00003300
@@ -380,16 +381,6 @@ Tiles:
 	dw `30000000
 	dw `30000000
 
-; corrupted ghost tile here
-	dw `20333020
-	dw `03100130
-	dw `30300303
-	dw `30200003
-	dw `03010130
-	dw `20332320
-	dw `03020300
-	dw `30200030
-; end ghost tile
   TilesEnd:
 	MenuTiles:
 

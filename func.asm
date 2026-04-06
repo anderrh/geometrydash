@@ -103,11 +103,11 @@ reset:
     call hUGE_set_position
     ret
 IsFloorTile:
-    cp a, $11
+    cp a, BBB
     ret z
-    cp a, $21
+    cp a, TTT
     ret z
-    cp a, $22
+    cp a, gho
     ret 
 GetTilesByAPixel:
     call GetLevelTileAddressFromScroll
