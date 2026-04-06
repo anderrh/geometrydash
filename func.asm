@@ -1,6 +1,7 @@
 CheckFloorTile:
 
     ld a, [wMainX+1]
+    add a, 3
     ld b, a
     ld a, [wMainY+1]
     add a, 3
@@ -22,6 +23,7 @@ CheckFloorTile:
 CheckPortalTile:
 
     ld a, [wMainX+1]
+    add a, 3
     ld b, a
     ld a, [wMainY+1]
     add a, 3
@@ -127,7 +129,7 @@ GetTilesByAPixel:
 CheckSpikeTile:
 
     ld a, [wMainX+1]
-    add a, 7
+    add a, 8
     ld b, a
     ld a, [wMainY+1]
     add a, 7
@@ -423,6 +425,7 @@ CopyColumn:
 Transporters:
 
     ld a, [wMainX+1]
+    add a, 3
     ld b, a
     ld a, [wMainY+1]
     add a, 3
