@@ -44,7 +44,12 @@ Menu:
 
     ld a, [wCurKeys]
     and a, PADF_START
-    call nz, PlayGame
+    jp z, .noStart
+    ld a, [wCurKeys]
+    and a, PADF_LEFT
+    ld [wNoSpike], a
+    call PlayGame
+    .noStart:
     
     ld a, [wCurKeys]
     and a, PADF_UP
@@ -484,6 +489,9 @@ WaitVBlank2:
     ld [wGameOver], a
     gamea:
     call CheckSpikeTile
+    jp nz, nospike
+    ld a, [wNoSpike]
+    or a
     jp nz, nospike
     call GameOver
     nospike:

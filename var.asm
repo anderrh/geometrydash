@@ -26,4 +26,5 @@ SECTION "States", WRAM0
 wLevel:db
 wGameState:db
 wLevelSelector:db
+wNoSpike:db
 
