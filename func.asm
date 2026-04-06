@@ -387,6 +387,49 @@ ScrollLevel:
     ld e, a
     ld d, 0
     call CopyColumn
+    call GetRandom
+    ld b, a
+    ld a, [wScary] ; how scary is it
+    cp a, b
+    jp c, .noghost ; not scary enough: no ghost
+    .jkghost:
+    call GetRandom
+    and a, $7
+    sub a, 2
+    ld b, a
+    ld a, [wMainY+1]
+    srl a
+    srl a
+    srl a ; divide by 8 to get from pixel to tile
+    add a, b ; player row + random offset
+    and a, $1f ; wrap to 0-31
+    ld h, 0
+    ld l, a
+    add hl, hl
+    add hl, hl
+    add hl, hl
+    add hl, hl
+    add hl, hl ; multiply row by 32
+    ld b, h
+    ld c, l
+    ld a, [rSCX]
+    srl a
+    srl a
+    srl a
+    add a, $1f
+    and a, 31 ; change column 31
+    ld e, a
+    ld d, 0
+    ld hl, _SCRN0
+    add hl, de ; column
+    add hl, bc ; row
+    push hl
+    call GetRandom ; random tile
+    and a, $1f
+    add a, 9
+    pop hl
+    ld [hl], a
+.noghost:
     ret
 
 

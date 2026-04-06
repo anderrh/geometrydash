@@ -164,6 +164,23 @@ IncreaseScorePackedBCD:
     ld [hl], a          ; store score
     call UpdateScoreBoard
     ret
+
+GetRandom:
+    ld hl, wRandom
+    ld a, [hl+]
+    ld h, [hl]
+    ld l, a
+    srl h
+    rr l
+    sbc a, a
+    and $b4
+    xor h
+    ld h, a
+    ld [wRandom+1], a
+    ld a, l
+    ld [wRandom], a
+    ret
+        
 		; Read the packed BCD score from wScore and updates the score display
 UpdateScoreBoard:
     ld a, [wScore]      ; Get the Packed score

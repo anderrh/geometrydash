@@ -28,3 +28,4 @@ wGameState:db
 wLevelSelector:db
 wNoSpike:db
 wScary:db
+wRandom: dw
