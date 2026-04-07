@@ -338,9 +338,9 @@ get_current_note:
 ;;; Destroy: AF
 get_note_period:
     add a ; double it to get index into hi/lo table
-    add LOW(note_table)
+    add LOW(wNoteTable)
     ld l, a
-    adc HIGH(note_table)
+    adc HIGH(wNoteTable)
     sub l
     ld h, a
     ld a, [hl+]
@@ -1892,5 +1892,5 @@ IF DEF(PREVIEW_MODE)
 ENDC
     ret
 
-note_table:
+note_table_rom::
 include "include/hUGE_note_table.inc"

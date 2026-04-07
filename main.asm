@@ -38,6 +38,8 @@ Menu:
 
     call SetSongBank
     call hUGE_dosound
+    call CorruptNoteEntry
+    call CorruptWaveRAM
 
     call UpdateKeys
 
@@ -212,6 +214,7 @@ ClearOam2:
       ld [wScrollCounter+1], a
       ld [wMainCost],a
       ld [wScary],a
+      call InitNoteTable
       ld a, 1;1 pix per frame
       ld [wScrollSpeed], a
       ld a, cub
@@ -461,6 +464,8 @@ WaitVBlank2:
 
     call SetSongBank
     call hUGE_dosound
+    call CorruptNoteEntry
+    call CorruptWaveRAM
 
     ; Load wMainY into hl (destroying a)
     ld a, [wMainY]
@@ -730,5 +735,7 @@ INCLUDE "level4.asm"
 
 INCLUDE "menulevel.asm"
 ;INCLUDE "menumusic.asm"
+
+INCLUDE "spooky.asm"
 
 INCLUDE "var.asm"
