@@ -26,6 +26,7 @@ call WaitVBlank4
     call SetSongBank
     ld hl, menusong
     call hUGE_init
+    call InitNoteTable
 
 Menu:
      ld a, [rLY]
@@ -38,8 +39,6 @@ Menu:
 
     call SetSongBank
     call hUGE_dosound
-    call CorruptNoteEntry
-    call CorruptWaveRAM
 
     call UpdateKeys
 
@@ -213,7 +212,9 @@ ClearOam2:
       ld [wScrollCounter], a
       ld [wScrollCounter+1], a
       ld [wMainCost],a
+
       ld [wScary],a
+
       call InitNoteTable
       ld a, 1;1 pix per frame
       ld [wScrollSpeed], a

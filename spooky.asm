@@ -43,19 +43,51 @@ CorruptNoteEntry::
     cp 72
     jr nc, .pickNote   ; retry if out of range
 
+    ; compute target entry pointer and push it
+    ld d, a            ; D = target note index (0-71)
     add a              ; x2 for word offset
     ld c, a
     ld b, 0
     ld hl, wNoteTable
     add hl, bc
+    push hl            ; save target entry address
 
-    ; corrupt: XOR small random value into low byte of frequency
-    push hl
+    ; pick offset: random 0-7, 0-2 = up 1-3, 3-7 = down 1-5
     call GetRandom
-    pop hl
-    and $0F            ; magnitude 0-15
-    xor [hl]
-    ld [hl], a
+    and $07            ; 0-7
+    cp 3
+    jr nc, .goDown
+    ; go up 1-3: offset = A + 1
+    inc a
+    ld b, a
+    ld a, d
+    add a, b
+    cp 72
+    jr c, .srcOk
+    ld a, 71           ; clamp to max
+    jr .srcOk
+.goDown:
+    ; go down 1-5: offset = A - 2 (3->1, 4->2, 5->3, 6->4, 7->5)
+    sub 2
+    ld b, a
+    ld a, d
+    sub b
+    jr nc, .srcOk
+    xor a              ; clamp to 0
+.srcOk:
+    ; A = source note index, look up its frequency
+    add a              ; x2 for word offset
+    ld c, a
+    ld b, 0
+    ld hl, wNoteTable
+    add hl, bc
+    ld a, [hl+]
+    ld d, a            ; D = source low byte
+    ld e, [hl]         ; E = source high byte
+    pop hl             ; HL = destination entry
+    ld [hl], d         ; write low byte
+    inc hl
+    ld [hl], e         ; write high byte
     ret
 
 ; Approach 3: Corrupt wave RAM as wScary rises.
