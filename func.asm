@@ -435,13 +435,20 @@ ScrollLevel:
     add hl, de ; column
     add hl, bc ; row
     push hl
-    call GetRandom ; random tile
-    and a, $1f
-    add a, 9
+    call GetRandom ; random tile from ghost set
+    and a, .ghostTilesOkToAddEnd - .ghostTilesOkToAdd - 1 ; pick one of them
+    ld hl, .ghostTilesOkToAdd
+    ld e, a
+    ld d, 0
+    add hl, de
+    ld a, [hl]
     pop hl
     ld [hl], a
 .noghost:
     ret
+.ghostTilesOkToAdd:
+    db BBB, TTT, gho, ooo
+.ghostTilesOkToAddEnd:
 
 
 CopyColumn:
