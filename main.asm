@@ -243,6 +243,7 @@ ClearOam2:
     call SetSongBank
     ld hl , lvl1song
     call hUGE_init
+    call InitNoteTable
 
     ; During the first (blank) frame, initialize display registers
     ld a, %11100100
@@ -370,6 +371,7 @@ ClearOam:
     call SetSongBank
     ld hl , lvl1song
     call hUGE_init
+    call InitNoteTable
 
     ; During the first (blank) frame, initialize display registers
     ld a, %11100100
@@ -540,6 +542,7 @@ WaitVBlank2:
     call SetSongBank
     ld hl , lvl1song
     call hUGE_init
+    call InitNoteTable
     .skipResetSong
     jp Main
 
