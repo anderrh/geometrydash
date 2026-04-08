@@ -7,13 +7,19 @@ CheckFloorTile:
     add a, 3
     ld c,a
     call GetTilesByAPixel
+    ; b = (left, upper), c = (left, lower)
+    ; d = (right, upper), e = (right, lower)
+    ld a, [wMainMomentumY+1]
+    or a
+    jp z, .belowOnly
     ld a, b
     call IsFloorTile
     ret z
-    ld a, c
+    ld a, d
     call IsFloorTile
     ret z
-    ld a, d
+    .belowOnly:
+    ld a, c
     call IsFloorTile
     ret z
     ld a, e
@@ -289,9 +295,6 @@ MoveOutofLevel:
     add hl, de
     ld b,h
     ld c,l
-    ld a,0
-    ld [wMainMomentumY], a
-    ld [wMainMomentumY+1], a
     ; now lets begin the loop
     .repeat_abs_speedY_8:
         pop hl
@@ -312,7 +315,7 @@ MoveOutofLevel:
         ; if it's a floor tile then z flag is set
         jp z ,.Touching
         ; not Touching code here
-        
+
         jp .StopThisScript
         .Touching:
         dec bc
@@ -333,6 +336,9 @@ MoveOutofLevel:
     call GameOver
 
     .StopThisScript
+    ld a,0
+    ld [wMainMomentumY], a
+    ld [wMainMomentumY+1], a
     pop hl
     pop bc
     pop af
